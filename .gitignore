@@ -1,3 +1,5 @@
+*.properties
+
 /target/
 /.mvn
 mvnw
