@@ -12,6 +12,10 @@ import javax.persistence.*;
 @Data
 public class ItxiaMember {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private Integer id;
+
     /**
      * 姓名
      */
@@ -20,7 +24,6 @@ public class ItxiaMember {
     /**
      * 登陆账号
      */
-    @Id
     @Column(name = "account")
     private String loginName;
 

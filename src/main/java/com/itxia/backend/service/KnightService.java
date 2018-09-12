@@ -3,6 +3,8 @@ package com.itxia.backend.service;
 import com.itxia.backend.controller.vo.WrapperResponse;
 import com.itxia.backend.data.repo.ItxiaMemberRepository;
 import com.itxia.backend.data.repo.OrderRepository;
+import lombok.var;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -29,9 +31,10 @@ public class KnightService {
      * <p>
      * 任务：
      * 1. 使用 itxiaMemberRepository 取出对应账号，若不存在，返回失败
-     * 2. 检查密码与oldPassword是否一致，若不一致，返回失败
-     * 3. 修改密码并使用 itxiaMemberRepository 存储
-     * 4. 返回成功
+     * 2. 两个密码为空时，返回失败
+     * 3. 检查密码与oldPassword是否一致，若不一致，返回失败
+     * 4. 修改密码并使用 itxiaMemberRepository 存储
+     * 5. 返回成功
      *
      * @param knightId    IT侠账号
      * @param oldPassword 旧密码
@@ -39,7 +42,17 @@ public class KnightService {
      * @return 返回操作结果
      */
     public WrapperResponse modifyPassword(String knightId, String oldPassword, String newPassword) {
-        return WrapperResponse.wrapFail();
+        if (StringUtils.isEmpty(oldPassword) || StringUtils.isEmpty(newPassword)) {
+            return WrapperResponse.wrapFail();
+        }
+        var member = itxiaMemberRepository.findOneByLoginName(knightId);
+        if (oldPassword.equals(member.getPassword())) {
+            member.setPassword(newPassword);
+            itxiaMemberRepository.save(member);
+            return WrapperResponse.wrapSuccess();
+        } else {
+            return WrapperResponse.wrapFail();
+        }
     }
 
     /**

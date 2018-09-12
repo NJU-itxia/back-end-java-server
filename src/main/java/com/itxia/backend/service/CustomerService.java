@@ -3,9 +3,12 @@ package com.itxia.backend.service;
 import com.itxia.backend.controller.vo.AppointmentParam;
 import com.itxia.backend.controller.vo.WrapperResponse;
 import com.itxia.backend.data.repo.OrderRepository;
+import lombok.var;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.stream.Collectors;
 
 /**
  * 用户相关的服务
@@ -96,6 +99,13 @@ public class CustomerService {
      * @return 返回查询结果
      */
     public WrapperResponse getAppointments(String customerId) {
-        return WrapperResponse.wrapFail();
+        if (customerId == null) {
+            return WrapperResponse.wrapFail();
+        }
+        var allAppointments = orderRepository.findAll();
+        var result = allAppointments.stream()
+                .filter(a -> customerId.equals(a.getCustomer()))
+                .collect(Collectors.toList());
+        return WrapperResponse.wrap(result);
     }
 }
