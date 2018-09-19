@@ -1,5 +1,6 @@
 package com.itxia.backend.data.model;
 
+import lombok.Builder;
 import lombok.Data;
 
 import javax.persistence.*;
@@ -10,10 +11,11 @@ import javax.persistence.*;
 @Entity
 @Table(name = "members")
 @Data
+@Builder
 public class ItxiaMember {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
     /**

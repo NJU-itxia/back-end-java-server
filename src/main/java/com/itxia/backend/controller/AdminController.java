@@ -1,6 +1,7 @@
 package com.itxia.backend.controller;
 
 import com.itxia.backend.controller.vo.WrapperResponse;
+import com.itxia.backend.data.model.Location;
 import com.itxia.backend.service.AdminService;
 import com.itxia.backend.service.KnightService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -52,8 +53,8 @@ public class AdminController {
     }
 
     @RequestMapping("/createMember")
-    public WrapperResponse createMember(String username, String password) {
-        return adminService.createMember(username, password);
+    public WrapperResponse createMember(String username, String password, Location location, String name) {
+        return adminService.createMember(username, password, location, name);
     }
 
     @RequestMapping("/listAllMembers")

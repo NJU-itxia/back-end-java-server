@@ -1,6 +1,8 @@
 package com.itxia.backend.service;
 
 import com.itxia.backend.controller.vo.WrapperResponse;
+import com.itxia.backend.data.model.ItxiaMember;
+import com.itxia.backend.data.model.Location;
 import com.itxia.backend.data.repo.ItxiaMemberRepository;
 import com.itxia.backend.data.repo.OrderRepository;
 import lombok.var;
@@ -49,8 +51,22 @@ public class AdminService {
      * @param password 密码
      * @return 操作结果，使用WrapperResponse中的静态方法包装
      */
-    public WrapperResponse createMember(String username, String password) {
-        return WrapperResponse.wrapFail();
+    public WrapperResponse createMember(String username, String password, Location location, String name) {
+        var testMember = itxiaMemberRepository.findOneByLoginName(username);
+        if (testMember != null) {
+            return WrapperResponse.wrapFail();
+        } else {
+            ItxiaMember member = ItxiaMember.builder()
+                    .admin(false)
+                    .loginName(username)
+                    .name(name)
+                    .password(password)
+                    .email(null)
+                    .locationRawValue(location.getValue())
+                    .build();
+            itxiaMemberRepository.save(member);
+        }
+        return WrapperResponse.wrapSuccess();
     }
 
     /**
