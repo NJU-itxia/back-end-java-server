@@ -97,8 +97,7 @@ public class KnightService {
             logger.info("订单状态不为新建状态");
             return WrapperResponse.wrapFail();
         }
-        //这一段逻辑有问题 需要改
-        order.setStatus(1);
+        order.setStatus(Order.Status.ACCEPTED.getIndex());
         order.setHandler(member.getId());
         orderRepository.save(order);
         return WrapperResponse.wrapSuccess();

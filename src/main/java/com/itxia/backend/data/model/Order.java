@@ -1,6 +1,7 @@
 package com.itxia.backend.data.model;
 
 import lombok.Data;
+import lombok.Getter;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
@@ -91,15 +92,15 @@ public class Order {
      * @param status 校区的字符串
      */
     public void setStatus(Integer status) {
-        if (status == 0) {
+        if (status == Status.CREATED.getIndex()) {
             this.status = Status.CREATED;
-        } else if (status == 1) {
+        } else if (status == Status.ACCEPTED.getIndex()) {
             this.status = Status.ACCEPTED;
-        } else if (status == 2) {
+        } else if (status == Status.FINISHED.getIndex()) {
             this.status = Status.FINISHED;
-        } else if (status == 3) {
+        } else if (status == Status.NO_SOLUTION.getIndex()) {
             this.status = Status.NO_SOLUTION;
-        } else if (status == 4) {
+        } else if (status == Status.CANCELED.getIndex()) {
             this.status = Status.CANCELED;
         }
     }
@@ -137,10 +138,17 @@ public class Order {
     /**
      * 订单的状态
      */
+    @Getter
     public enum Status {
-        FINISHED("已解决"), CREATED("新创建"), ACCEPTED("已接受"), NO_SOLUTION("无法解决"), CANCELED("用户取消"), UNDEFINED("未知");
+        FINISHED("已解决", 2), CREATED("新创建", 0), ACCEPTED("已接受", 1), NO_SOLUTION("无法解决", 3), CANCELED("用户取消", 4), UNDEFINED("未知", -1);
 
-        Status(String description) {
+        private String description;
+
+        private int index;
+
+        Status(String description, int index) {
+            this.description = description;
+            this.index = index;
         }
     }
 }

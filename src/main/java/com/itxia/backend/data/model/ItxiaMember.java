@@ -59,6 +59,7 @@ public class ItxiaMember {
     /**
      * 考虑在此处处理解密
      * 获取到的应该是解密的密码
+     * 在独立数据层之前不要使用
      *
      * @return 返回解密结果
      */
@@ -69,6 +70,7 @@ public class ItxiaMember {
     /**
      * 考虑在此处处理加密
      * 设置进去的应该是加密后的密码
+     * 在独立数据层之前不要使用
      *
      * @param password 原密码
      */
