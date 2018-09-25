@@ -5,10 +5,15 @@ import com.itxia.backend.data.model.ItxiaMember;
 import com.itxia.backend.data.model.Location;
 import com.itxia.backend.data.repo.ItxiaMemberRepository;
 import com.itxia.backend.data.repo.OrderRepository;
+import com.itxia.backend.util.PasswordUtil;
 import lombok.var;
+import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
 
 /**
  * 管理员账号的相关操作服务
@@ -22,6 +27,8 @@ public class AdminService {
     private final OrderRepository orderRepository;
 
     private final ItxiaMemberRepository itxiaMemberRepository;
+
+    private final Logger logger = LoggerFactory.getLogger(AdminService.class);
 
     @Autowired
     public AdminService(OrderRepository orderRepository, ItxiaMemberRepository itxiaMemberRepository) {
@@ -54,6 +61,7 @@ public class AdminService {
     public WrapperResponse createMember(String username, String password, Location location, String name) {
         var testMember = itxiaMemberRepository.findOneByLoginName(username);
         if (testMember != null) {
+            logger.info("existed member");
             return WrapperResponse.wrapFail();
         } else {
             ItxiaMember member = ItxiaMember.builder()
@@ -66,6 +74,7 @@ public class AdminService {
                     .build();
             itxiaMemberRepository.save(member);
         }
+        logger.info("create success!");
         return WrapperResponse.wrapSuccess();
     }
 
@@ -98,6 +107,25 @@ public class AdminService {
      * @return 返回操作结果
      */
     public WrapperResponse modifyMemberPassword(String memberId, String newPassword) {
-        return WrapperResponse.wrapFail();
+        if (StringUtils.isEmpty(memberId) || StringUtils.isEmpty(newPassword)) {
+            logger.info("参数为空: memberId: " + memberId + " newPassword: " + newPassword);
+            return WrapperResponse.wrapFail();
+        }
+        if (!PasswordUtil.isValidPassword(newPassword)) {
+            logger.info("密码不符合规格");
+            return WrapperResponse.wrapFail();
+        }
+        var member = itxiaMemberRepository.findOneByLoginName(memberId);
+        if (member == null) {
+            logger.info("itxiaMember 不存在");
+            return WrapperResponse.wrapFail();
+        }
+        if (newPassword.equals(member.getPassword())) {
+            logger.info("修改密码时，新密码和原密码的相同");
+            return WrapperResponse.wrapFail("不能修改为同样的密码");
+        }
+        member.setPassword(newPassword);
+        itxiaMemberRepository.save(member);
+        return WrapperResponse.wrapSuccess();
     }
 }

@@ -46,6 +46,19 @@ public class WrapperResponse<T> {
     }
 
     /**
+     * 附带错误信息的失败
+     * @param message 错误信息
+     * @param <T> 不管
+     * @return 包装后的返回信息
+     */
+    public static <T> WrapperResponse wrapFail(String message) {
+        var response = new WrapperResponse();
+        response.success = false;
+        response.data = message;
+        return response;
+    }
+
+    /**
      * 包装一个失败的返回信息
      *
      * @param <T> 实际上没有意义
