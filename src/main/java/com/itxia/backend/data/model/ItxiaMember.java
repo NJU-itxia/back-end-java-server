@@ -57,6 +57,26 @@ public class ItxiaMember {
     private String email;
 
     /**
+     * 考虑在此处处理解密
+     * 获取到的应该是解密的密码
+     *
+     * @return 返回解密结果
+     */
+    public String getPassword() {
+        return password;
+    }
+
+    /**
+     * 考虑在此处处理加密
+     * 设置进去的应该是加密后的密码
+     *
+     * @param password 原密码
+     */
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    /**
      * 当location为空时被调用
      * 传入locationRawValue，将location设置为仙林或鼓楼
      *
