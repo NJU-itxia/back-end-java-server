@@ -58,8 +58,10 @@ public class PasswordUtil {
             logger.info("密码长度不在8-16区间");
             return false;
         }
-        if (password.charAt(0) == '.') {
-            logger.info("密码不得以.开头");
+        Pattern charAndNum = Pattern.compile("[^a-zA-Z0-9]");
+        Matcher charAndNumMatcher = charAndNum.matcher(password.substring(0, 1));
+        if (charAndNumMatcher.find()) {
+            logger.info("密码不得以特殊字符开头");
             return false;
         }
         Pattern character = Pattern.compile("[a-zA-Z]");
@@ -80,13 +82,17 @@ public class PasswordUtil {
 
     /**
      * 加密，加密后会打上前缀.
-     * 考虑不处理.开头的密码(未实现)
+     * 不处理.开头的密码
      *
      * @param password 原密码
      * @return 加密结果
      */
     public static String encryptPassword(String password) {
-        return "." + stringEncryptor.encrypt(password);
+        if (password.charAt(0) == '.') {
+            return password;
+        } else {
+            return "." + stringEncryptor.encrypt(password);
+        }
     }
 
     /**
@@ -98,7 +104,7 @@ public class PasswordUtil {
      * @return 解密结果
      */
     public static String decryptPassword(String password) {
-        if (password.startsWith(".")) {
+        if (password.charAt(0) == '.') {
             return stringEncryptor.decrypt(password.substring(1));
         } else {
             return password;

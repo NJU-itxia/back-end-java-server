@@ -23,6 +23,7 @@ public class PasswordUtilTest {
      * 1. 长度[8,16]
      * 2. 必须包含英文和数字
      * 3. 其他字符不做限制
+     * 4. 不得以特殊字符开头
      */
     @Test
     public void isValidPassword() {
@@ -38,11 +39,12 @@ public class PasswordUtilTest {
         assertTrue("密码长度为8时，包含字母、数字和其他字符，返回true", PasswordUtil.isValidPassword("a-sj1234"));
         assertTrue("密码长度为16时，只有字母和数字，返回true", PasswordUtil.isValidPassword("assj1234sdas8372"));
         assertTrue("密码长度为16时，包含字母、数字和其他字符，返回true", PasswordUtil.isValidPassword("assj1234sdas8372"));
+        assertFalse("密码长度为16时，以特殊字符开头，返回false", PasswordUtil.isValidPassword("-ssj1234sdas8372"));
     }
 
     /**
      * 输出一下加密的效果
-     * 可能要加上一些，如.开头不加密（或特殊符号开头不加密）
+     * 以.开头时不加密，这部分没有写
      */
     @Test
     public void encryptPassword() {

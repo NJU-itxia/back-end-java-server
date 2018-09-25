@@ -90,7 +90,7 @@ public class Order {
      *
      * @param status 校区的字符串
      */
-    private void setStatus(Integer status) {
+    public void setStatus(Integer status) {
         if (status == 0) {
             this.status = Status.CREATED;
         } else if (status == 1) {
@@ -110,7 +110,7 @@ public class Order {
      *
      * @param location 校区的字符串
      */
-    private void setLocation(String location) {
+    public void setLocation(String location) {
         if ("鼓楼".equals(location)) {
             this.location = Location.GU_LOU;
         } else if ("仙林".equals(location)) {
@@ -137,7 +137,7 @@ public class Order {
     /**
      * 订单的状态
      */
-    private enum Status {
+    public enum Status {
         FINISHED("已解决"), CREATED("新创建"), ACCEPTED("已接受"), NO_SOLUTION("无法解决"), CANCELED("用户取消"), UNDEFINED("未知");
 
         Status(String description) {
