@@ -56,4 +56,10 @@ public class CustomerController {
         String customerId = Optional.of(request).map(r -> r.getHeader("id")).orElse(null);
         return customerService.getAppointments(customerId);
     }
+
+    @RequestMapping("/reply")
+    public WrapperResponse reply(int appointmentId, String content, HttpServletRequest request) {
+        String customerId = Optional.of(request).map(r -> r.getHeader("id")).orElse(null);
+        return customerService.commentOnAppointment(customerId, appointmentId, content);
+    }
 }

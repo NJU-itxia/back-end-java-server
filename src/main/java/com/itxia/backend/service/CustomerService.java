@@ -108,4 +108,21 @@ public class CustomerService {
                 .collect(Collectors.toList());
         return WrapperResponse.wrap(result);
     }
+
+    /**
+     * 用户对某个预约单的评论
+     * 任务：
+     * 1. 检查参数是否为空
+     * 2. 取出对应的预约单
+     * 3. 如果没有，返回失败
+     * 4. 如果有，添加一个回复
+     *
+     * @param customerId    用户的id
+     * @param appointmentId 预约单的id
+     * @param content       回复内容
+     * @return 返回操作结果
+     */
+    public WrapperResponse commentOnAppointment(String customerId, int appointmentId, String content) {
+        return WrapperResponse.wrapFail();
+    }
 }
