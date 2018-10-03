@@ -51,8 +51,9 @@ public class AdminService {
      * <p>
      * 任务：
      * 1. 检查是否有重名用户，如果有，返回失败
-     * 2. 用户名，密码不得为null或者""
-     * 3. 添加成功则返回成功
+     * 2. 用户名不得为null或者""
+     * 3. 密码应符合制定的规范
+     * 4. 添加成功则返回成功
      *
      * @param username 用户名
      * @param password 密码
@@ -60,21 +61,28 @@ public class AdminService {
      */
     public WrapperResponse createMember(String username, String password, Location location, String name) {
         var testMember = itxiaMemberRepository.findOneByLoginName(username);
-        if (testMember != null) {
-            logger.info("existed member");
+        if (StringUtils.isEmpty(name) || location == null) {
+            logger.info("校区和登录名不能为空");
             return WrapperResponse.wrapFail();
-        } else {
-            ItxiaMember member = ItxiaMember.builder()
-                    .admin(false)
-                    .loginName(username)
-                    .name(name)
-                    .password(password)
-                    .email(null)
-                    .locationRawValue(location.getValue())
-                    .build();
-            itxiaMemberRepository.save(member);
         }
-        logger.info("create success!");
+        if (testMember != null) {
+            logger.info("创建的用户已存在");
+            return WrapperResponse.wrapFail();
+        }
+        if (!PasswordUtil.isValidPassword(password)) {
+            logger.info("密码不符合要求");
+            return WrapperResponse.wrapFail();
+        }
+        ItxiaMember member = ItxiaMember.builder()
+                .admin(false)
+                .loginName(username)
+                .name(name)
+                .password(password)
+                .email(null)
+                .locationRawValue(location.getValue())
+                .build();
+        itxiaMemberRepository.save(member);
+        logger.info("用户创建成功");
         return WrapperResponse.wrapSuccess();
     }
 

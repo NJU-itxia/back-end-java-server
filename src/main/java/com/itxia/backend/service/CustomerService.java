@@ -2,12 +2,17 @@ package com.itxia.backend.service;
 
 import com.itxia.backend.controller.vo.AppointmentParam;
 import com.itxia.backend.controller.vo.WrapperResponse;
+import com.itxia.backend.data.model.Order;
 import com.itxia.backend.data.repo.OrderRepository;
 import lombok.var;
+import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.sql.Timestamp;
 import java.util.stream.Collectors;
 
 /**
@@ -19,6 +24,8 @@ public class CustomerService {
 
     private final OrderRepository orderRepository;
 
+    private static final Logger logger = LoggerFactory.getLogger(CustomerService.class);
+
     @Autowired
     public CustomerService(OrderRepository orderRepository) {
         this.orderRepository = orderRepository;
@@ -26,6 +33,8 @@ public class CustomerService {
 
     /**
      * 用户新建一个预约
+     * 还没有添加传文件的选项
+     * 添加、修改预约时应该更新最后修改时间
      * <p>
      * 任务：
      * 1. 如果没有任何联系方式，返回错误
@@ -36,11 +45,27 @@ public class CustomerService {
      * @return 返回成功或者失败，通过wrapFail或wrapSuccess返回
      */
     public WrapperResponse makeAppointment(String customerId, AppointmentParam appointmentParam) {
-        return WrapperResponse.wrapFail();
+        if (StringUtils.isEmpty(customerId)) {
+            logger.info("用户id为空");
+            return WrapperResponse.wrapFail();
+        }
+        Order order = Order.builder()
+                .customerName(appointmentParam.getName())
+                .email(appointmentParam.getEmail())
+                .locationRawValue(appointmentParam.getCampus())
+                .deviceModel(appointmentParam.getDeviceVersion())
+                .osVersion(appointmentParam.getSystemVersion())
+                .problemDescription(appointmentParam.getDescription())
+                .lastEditTime(new Timestamp(System.currentTimeMillis()))
+                .build();
+        orderRepository.save(order);
+        return WrapperResponse.wrapSuccess();
     }
 
     /**
      * 用户取消预约
+     * 如果已经接单，联系接单的人取消？
+     * 讨论一下已经接单是不是可以取消
      * <p>
      * 任务：
      * 1. 将预约从数据库取出，若无此订单，返回失败
@@ -53,11 +78,33 @@ public class CustomerService {
      * @return 返回操作结果
      */
     public WrapperResponse deleteAppointment(String customerId, int appointmentId) {
-        return WrapperResponse.wrapFail();
+        if (StringUtils.isEmpty(customerId)) {
+            logger.info("用户id为空");
+            return WrapperResponse.wrapFail();
+        }
+        var order = orderRepository.findById(appointmentId).orElse(null);
+        if (order == null) {
+            logger.info("没有此预约单");
+            return WrapperResponse.wrapFail();
+        }
+        if (!StringUtils.equals(order.getCustomer(), customerId)) {
+            logger.info("不是此用户的预约单");
+            return WrapperResponse.wrapFail();
+        }
+        if (order.getStatus() != Order.Status.CREATED) {
+            logger.info("不是新创建的订单，不可取消");
+            return WrapperResponse.wrapFail();
+        }
+        order.setStatus(Order.Status.CANCELED.getIndex());
+        orderRepository.save(order);
+        logger.info("订单取消成功");
+        return WrapperResponse.wrapSuccess();
     }
 
     /**
      * 获取用户的未完成的预约单
+     * 未完成的状态有 新创建 和 已接单
+     * 上述两个状态可以修改
      * <p>
      * 任务：
      * 1. 查询用户未完成的预约单，若无，返回失败

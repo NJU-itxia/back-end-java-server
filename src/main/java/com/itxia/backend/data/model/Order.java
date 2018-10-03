@@ -1,5 +1,6 @@
 package com.itxia.backend.data.model;
 
+import lombok.Builder;
 import lombok.Data;
 import lombok.Getter;
 
@@ -8,6 +9,7 @@ import java.sql.Timestamp;
 
 @Entity
 @Data
+@Builder
 @Table(name = "`order`")
 public class Order {
 
@@ -22,6 +24,12 @@ public class Order {
      */
     @Column(name = "updatedon")
     private Timestamp lastEditTime;
+
+    /**
+     * 预约人的姓名
+     */
+    @Column(name = "name")
+    private String customerName;
 
     /**
      * 预约人联系电话
@@ -88,6 +96,7 @@ public class Order {
     /**
      * 当status为空时被调用
      * 传入statusRawValue，将status设置为仙林或鼓楼
+     * 最后一个set是在创建的时候使用的，这个设计非常差劲，正在想办法修改
      *
      * @param status 校区的字符串
      */
@@ -103,11 +112,13 @@ public class Order {
         } else if (status == Status.CANCELED.getIndex()) {
             this.status = Status.CANCELED;
         }
+        this.statusRawValue = status;
     }
 
     /**
      * 当location为空时被调用
      * 传入locationRawValue，将location设置为仙林或鼓楼
+     * 最后一个set是在创建的时候使用的，这个设计非常差劲，正在想办法修改
      *
      * @param location 校区的字符串
      */
@@ -119,6 +130,7 @@ public class Order {
         } else {
             this.location = Location.UNDEFINED;
         }
+        this.locationRawValue = location;
     }
 
     public Location getLocation() {
