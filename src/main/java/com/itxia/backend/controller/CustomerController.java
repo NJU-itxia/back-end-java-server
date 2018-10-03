@@ -3,6 +3,8 @@ package com.itxia.backend.controller;
 import com.itxia.backend.controller.vo.AppointmentParam;
 import com.itxia.backend.controller.vo.WrapperResponse;
 import com.itxia.backend.service.CustomerService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -21,6 +23,8 @@ public class CustomerController {
 
     private final CustomerService customerService;
 
+    private static final Logger logger = LoggerFactory.getLogger(CustomerController.class);
+
     @Autowired
     public CustomerController(CustomerService customerService) {
         this.customerService = customerService;
@@ -28,6 +32,7 @@ public class CustomerController {
 
     @RequestMapping("/appointment")
     public WrapperResponse makeAppointment(@RequestBody AppointmentParam appointmentParam, HttpServletRequest request) {
+        logger.info("/customer/appointment");
         String customerId = Optional.of(request).map(r -> r.getHeader("id")).orElse(null);
         return customerService.makeAppointment(customerId, appointmentParam);
     }

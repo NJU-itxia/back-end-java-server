@@ -50,7 +50,8 @@ public class CustomerService {
             return WrapperResponse.wrapFail();
         }
         Order order = Order.builder()
-                .customerName(appointmentParam.getName())
+                .phone(customerId)
+                .customer(appointmentParam.getName())
                 .email(appointmentParam.getEmail())
                 .locationRawValue(appointmentParam.getCampus())
                 .deviceModel(appointmentParam.getDeviceVersion())
@@ -58,6 +59,7 @@ public class CustomerService {
                 .problemDescription(appointmentParam.getDescription())
                 .lastEditTime(new Timestamp(System.currentTimeMillis()))
                 .build();
+        order.setStatus(Order.Status.CREATED.getIndex());
         orderRepository.save(order);
         return WrapperResponse.wrapSuccess();
     }

@@ -25,10 +25,6 @@ public class AdminControllerTest {
     }
 
     @Test
-    public void logout() {
-    }
-
-    @Test
     public void modifyPassword() {
     }
 

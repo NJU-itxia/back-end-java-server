@@ -17,6 +17,7 @@ public class Order {
      * 订单id
      */
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
     /**
@@ -24,12 +25,6 @@ public class Order {
      */
     @Column(name = "updatedon")
     private Timestamp lastEditTime;
-
-    /**
-     * 预约人的姓名
-     */
-    @Column(name = "name")
-    private String customerName;
 
     /**
      * 预约人联系电话
@@ -69,7 +64,7 @@ public class Order {
     /**
      * 问题描述
      */
-    @Column(name = "desc")
+    @Column(name = "`desc`")
     private String problemDescription;
 
     /**
