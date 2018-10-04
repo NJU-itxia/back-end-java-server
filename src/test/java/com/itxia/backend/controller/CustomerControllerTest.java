@@ -18,7 +18,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 /**
- * 测试
+ * 测试CustomerController提供的接口
  */
 @RunWith(SpringRunner.class)
 @SpringBootTest
@@ -34,13 +34,24 @@ public class CustomerControllerTest {
         mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext).build();
     }
 
+    /**
+     * 测试接口/customer/appointment
+     * 直接post，不带header和body
+     * 没有body的时候应该是400
+     *
+     * @throws Exception 可能的异常
+     */
     @Test
-    public void makeAppointment() throws Exception {
+    public void wrongParam() throws Exception {
         mockMvc.perform(post("/customer/appointment"))
                 .andExpect(status().is(400));
         mockMvc.perform(post("/customer/appointment")
                 .header("id", "testCustomer"))
                 .andExpect(status().is(400));
+    }
+
+    @Test
+    public void makeAppointment() throws Exception {
         AppointmentParam param = AppointmentParam.builder()
                 .campus("鼓楼")
                 .description("没啥描述")

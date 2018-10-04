@@ -4,7 +4,10 @@ import com.itxia.backend.controller.vo.WrapperResponse;
 import com.itxia.backend.data.model.Location;
 import com.itxia.backend.service.AdminService;
 import com.itxia.backend.service.KnightService;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -17,6 +20,7 @@ import java.util.Optional;
  */
 @RestController
 @RequestMapping("/admin")
+@Api("IT侠后台用户使用的api")
 public class AdminController {
 
     private final KnightService knightService;
@@ -29,40 +33,47 @@ public class AdminController {
         this.adminService = adminService;
     }
 
-    @RequestMapping("/modifyPassword")
+    @ApiOperation(value = "后台用户修改自己密码")
+    @PostMapping("/modifyPassword")
     public WrapperResponse modifyPassword(String oldPassword, String newPassword, HttpServletRequest request) {
         String knightId = Optional.of(request).map(r -> r.getHeader("id")).orElse(null);
         return knightService.modifyPassword(knightId, oldPassword, newPassword);
     }
 
-    @RequestMapping("/listAppointments")
+    @ApiOperation(value = "后台用户查看所有的预约单")
+    @PostMapping("/listAppointments")
     public WrapperResponse listAppointments() {
         return adminService.listAllOrder();
     }
 
-    @RequestMapping("/acceptAppointment")
+    @ApiOperation(value = "后台用户接单")
+    @PostMapping("/acceptAppointment")
     public WrapperResponse acceptAppointment(int appointmentId, HttpServletRequest request) {
         String knightId = Optional.of(request).map(r -> r.getHeader("id")).orElse(null);
         return knightService.acceptAppointment(knightId, appointmentId);
     }
 
-    @RequestMapping("/reply")
+    @ApiOperation(value = "后台用户对某一个预约单添加评论回复")
+    @PostMapping("/reply")
     public WrapperResponse reply(int appointmentId, String content, HttpServletRequest request) {
         String knightId = Optional.of(request).map(r -> r.getHeader("id")).orElse(null);
         return knightService.reply(knightId, appointmentId, content);
     }
 
-    @RequestMapping("/createMember")
+    @ApiOperation(value = "管理员账号添加后台用户", notes = "需要管理员权限")
+    @PostMapping("/createMember")
     public WrapperResponse createMember(String username, String password, Location location, String name) {
         return adminService.createMember(username, password, location, name);
     }
 
-    @RequestMapping("/listAllMembers")
+    @ApiOperation(value = "管理员账号查询所有后台用户", notes = "需要管理员权限")
+    @PostMapping("/listAllMembers")
     public WrapperResponse listAllMembers() {
         return adminService.listAllMembers();
     }
 
-    @RequestMapping("/modifyMemberPassword")
+    @ApiOperation(value = "管理员账号修改后台用户密码", notes = "需要管理员权限")
+    @PostMapping("/modifyMemberPassword")
     public WrapperResponse modifyMemberPassword(String memberId, String newPassword) {
         return adminService.modifyMemberPassword(memberId, newPassword);
     }

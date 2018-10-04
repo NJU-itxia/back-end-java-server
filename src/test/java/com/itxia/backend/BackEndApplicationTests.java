@@ -34,13 +34,6 @@ public class BackEndApplicationTests {
 
     @Test
     public void contextLoads() throws Exception {
-        mockMvc.perform(post("/customer/login")
-                .param("phone", "123456"))
-                .andExpect(status().isOk());
-
-        mockMvc.perform(post("/customer/logout")
-                .cookie(new Cookie("token", "sss")))
-                .andExpect(status().isOk());
     }
 
 }

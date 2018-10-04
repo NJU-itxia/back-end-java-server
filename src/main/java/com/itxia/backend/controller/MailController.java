@@ -3,10 +3,11 @@ package com.itxia.backend.controller;
 import com.itxia.backend.controller.vo.WrapperResponse;
 import com.itxia.backend.service.MailService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.List;
+import java.util.ArrayList;
 
 /**
  * 邮件服务的controller
@@ -22,8 +23,16 @@ public class MailController {
         this.mailService = mailService;
     }
 
-    @RequestMapping("/send")
-    public WrapperResponse sendMail(String title, String content, List<String> addressList) {
+    /**
+     * 此方法传list有问题，尚未解决，可是使用request body
+     *
+     * @param title       标题
+     * @param content     内容
+     * @param addressList 列表
+     * @return 结果
+     */
+    @PostMapping("/send")
+    public WrapperResponse sendMail(String title, String content, ArrayList<String> addressList) {
         return mailService.sendMail(title, content, addressList);
     }
 }

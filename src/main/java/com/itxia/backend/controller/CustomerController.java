@@ -6,6 +6,7 @@ import com.itxia.backend.service.CustomerService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -30,39 +31,39 @@ public class CustomerController {
         this.customerService = customerService;
     }
 
-    @RequestMapping("/appointment")
+    @PostMapping("/appointment")
     public WrapperResponse makeAppointment(@RequestBody AppointmentParam appointmentParam, HttpServletRequest request) {
         logger.info("/customer/appointment");
         String customerId = Optional.of(request).map(r -> r.getHeader("id")).orElse(null);
         return customerService.makeAppointment(customerId, appointmentParam);
     }
 
-    @RequestMapping("/deleteAppointment")
+    @PostMapping("/deleteAppointment")
     public WrapperResponse deleteAppointment(int orderId, HttpServletRequest request) {
         String customerId = Optional.of(request).map(r -> r.getHeader("id")).orElse(null);
         return customerService.deleteAppointment(customerId, orderId);
     }
 
-    @RequestMapping("/getCurrentAppointment")
+    @PostMapping("/getCurrentAppointment")
     public WrapperResponse getCurrentAppointment(HttpServletRequest request) {
         String customerId = Optional.of(request).map(r -> r.getHeader("id")).orElse(null);
         return customerService.getCurrentAppointment(customerId);
     }
 
-    @RequestMapping("/modifyAppointment")
+    @PostMapping("/modifyAppointment")
     public WrapperResponse modifyAppointment(@RequestBody AppointmentParam appointmentParam, HttpServletRequest
             request) {
         String customerId = Optional.of(request).map(r -> r.getHeader("id")).orElse(null);
         return customerService.modifyAppointment(customerId, appointmentParam);
     }
 
-    @RequestMapping("/getAppointments")
+    @PostMapping("/getAppointments")
     public WrapperResponse getAppointments(HttpServletRequest request) {
         String customerId = Optional.of(request).map(r -> r.getHeader("id")).orElse(null);
         return customerService.getAppointments(customerId);
     }
 
-    @RequestMapping("/reply")
+    @PostMapping("/reply")
     public WrapperResponse reply(int appointmentId, String content, HttpServletRequest request) {
         String customerId = Optional.of(request).map(r -> r.getHeader("id")).orElse(null);
         return customerService.commentOnAppointment(customerId, appointmentId, content);
