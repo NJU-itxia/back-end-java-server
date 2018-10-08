@@ -116,7 +116,9 @@ public class CustomerService {
      * @return 成功时，使用WrapperResponse.wrap封装获取到的预约单， 失败时，返回wrapFail
      */
     public WrapperResponse getCurrentAppointment(String customerId) {
-        return WrapperResponse.wrapFail();
+        var orders = orderRepository.findByUserId(customerId);
+        orders = orders.stream().filter(o -> o.getStatus() == Order.Status.CREATED || o.getStatus() == Order.Status.ACCEPTED).collect(Collectors.toList());
+        return WrapperResponse.wrap(orders);
     }
 
     /**
