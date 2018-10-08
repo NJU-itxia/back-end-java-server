@@ -160,31 +160,6 @@
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
             </plugin>
-            <plugin>
-                <groupId>io.github.swagger2markup</groupId>
-                <artifactId>swagger2markup-maven-plugin</artifactId>
-                <version>1.3.7</version>
-                <configuration>
-                    <!--The URL or file path to the Swagger specification-->
-                    <swaggerInput>${project.build.directory}/swagger-ui/swagger.yaml</swaggerInput>
-                    <outputDir>${project.build.directory}/swagger-ui</outputDir>
-                    <outputFile>${project.build.directory}/swagger-ui/swagger.md</outputFile>
-                    <config>
-                        <!--设置输出文件的语言：ASCIIDOC, MARKDOWN, CONFLUENCE_MARKUP-->
-                        <swagger2markup.markupLanguage>MARKDOWN</swagger2markup.markupLanguage>
-                        <!--设置目录的展现方式-->
-                        <swagger2markup.pathsGroupedBy>TAGS</swagger2markup.pathsGroupedBy>
-                    </config>
-                </configuration>
-                <executions>
-                    <execution>
-                        <phase>compile</phase>
-                        <goals>
-                            <goal>convertSwagger2markup</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
         </plugins>
     </build>
 
