@@ -3,7 +3,9 @@ package com.itxia.backend.service;
 import com.itxia.backend.controller.vo.AppointmentParam;
 import com.itxia.backend.controller.vo.WrapperResponse;
 import com.itxia.backend.data.model.Order;
+import com.itxia.backend.data.model.Reply;
 import com.itxia.backend.data.repo.OrderRepository;
+import com.itxia.backend.data.repo.ReplyRepository;
 import lombok.var;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
@@ -24,11 +26,14 @@ public class CustomerService {
 
     private final OrderRepository orderRepository;
 
+    private final ReplyRepository replyRepository;
+
     private static final Logger logger = LoggerFactory.getLogger(CustomerService.class);
 
     @Autowired
-    public CustomerService(OrderRepository orderRepository) {
+    public CustomerService(OrderRepository orderRepository, ReplyRepository replyRepository) {
         this.orderRepository = orderRepository;
+        this.replyRepository = replyRepository;
     }
 
     /**
@@ -174,6 +179,27 @@ public class CustomerService {
      * @return 返回操作结果
      */
     public WrapperResponse commentOnAppointment(String customerId, int appointmentId, String content) {
-        return WrapperResponse.wrapFail();
+        if (StringUtils.isEmpty(customerId) || StringUtils.isEmpty(content)) {
+            logger.info("参数不能为空");
+            return WrapperResponse.wrapFail();
+        }
+        var order = orderRepository.findById(appointmentId).orElse(null);
+        if (order == null) {
+            logger.info("没有此订单");
+            return WrapperResponse.wrapFail();
+        }
+        if (!StringUtils.equals(customerId, order.getPhone())) {
+            logger.info("不是此用户的预约单");
+            return WrapperResponse.wrapFail();
+        }
+        Reply reply = Reply.builder()
+                .itxiaReply(false)
+                .replyTime(new Timestamp(System.currentTimeMillis()))
+                .content(content)
+                .orderId(appointmentId)
+                .build();
+        replyRepository.save(reply);
+        logger.info("新的用户评论已添加");
+        return WrapperResponse.wrapSuccess();
     }
 }
