@@ -80,4 +80,12 @@ public class CustomerControllerTest {
     @Test
     public void getCurrentAppointment() {
     }
+
+    @Test
+    public void getAppointmentsTest() throws Exception{
+        mockMvc.perform(post("/customer/getAppointments")
+                .header("id","15951814859"))
+                .andExpect(status().is(200))
+                .andDo(print());
+    }
 }

@@ -121,6 +121,10 @@ public class CustomerService {
      * @return 成功时，使用WrapperResponse.wrap封装获取到的预约单， 失败时，返回wrapFail
      */
     public WrapperResponse getCurrentAppointment(String customerId) {
+        if(StringUtils.isEmpty(customerId)) {
+            logger.info("用户id不能为空");
+            return WrapperResponse.wrapFail();
+        }
         var orders = orderRepository.findByUserId(customerId);
         orders = orders.stream().filter(o -> o.getStatus() == Order.Status.CREATED || o.getStatus() == Order.Status.ACCEPTED).collect(Collectors.toList());
         return WrapperResponse.wrap(orders);
@@ -173,12 +177,14 @@ public class CustomerService {
      * @return 返回查询结果
      */
     public WrapperResponse getAppointments(String customerId) {
+        System.out.println(customerId);
         if (customerId == null) {
+            logger.info("用户不能为空");
             return WrapperResponse.wrapFail();
         }
         var allAppointments = orderRepository.findAll();
         var result = allAppointments.stream()
-                .filter(a -> customerId.equals(a.getCustomer()))
+                .filter(a -> customerId.equals(a.getPhone()))
                 .collect(Collectors.toList());
         return WrapperResponse.wrap(result);
     }
