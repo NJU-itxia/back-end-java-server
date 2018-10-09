@@ -139,7 +139,25 @@ public class CustomerService {
      * @return 返回成功或失败
      */
     public WrapperResponse modifyAppointment(String customerId, AppointmentParam appointmentParam) {
-        return WrapperResponse.wrapFail();
+        if (StringUtils.isEmpty(customerId) || appointmentParam == null) {
+            logger.info("参数不能为空");
+            return WrapperResponse.wrapFail();
+        }
+        var order = orderRepository.findByUserId(customerId).stream()
+                .filter(o -> o.getStatus() == Order.Status.CREATED || o.getStatus() == Order.Status.ACCEPTED)
+                .findFirst()
+                .orElse(null);
+        if (order == null) {
+            logger.info("没有未完成的预约单");
+            return WrapperResponse.wrapFail();
+        }
+        order.setLocation(appointmentParam.getCampus());
+        order.setDeviceModel(appointmentParam.getDeviceVersion());
+        order.setOsVersion(appointmentParam.getSystemVersion());
+        order.setLastEditTime(new Timestamp(System.currentTimeMillis()));
+        order.setProblemDescription(appointmentParam.getDescription());
+        logger.info("修改完成");
+        return WrapperResponse.wrapSuccess();
     }
 
     /**
