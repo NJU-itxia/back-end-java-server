@@ -2,6 +2,7 @@ package com.itxia.backend.controller;
 
 import com.itxia.backend.controller.vo.WrapperResponse;
 import com.itxia.backend.service.MailService;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -32,6 +33,7 @@ public class MailController {
      * @return 结果
      */
     @PostMapping("/send")
+    @ApiOperation(value = "暂停使用")
     public WrapperResponse sendMail(String title, String content, ArrayList<String> addressList) {
         return mailService.sendMail(title, content, addressList);
     }
