@@ -3,6 +3,8 @@ package com.itxia.backend.controller;
 import com.itxia.backend.controller.vo.AppointmentParam;
 import com.itxia.backend.controller.vo.WrapperResponse;
 import com.itxia.backend.service.CustomerService;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,39 +34,46 @@ public class CustomerController {
     }
 
     @PostMapping("/appointment")
-    public WrapperResponse makeAppointment(@RequestBody AppointmentParam appointmentParam, HttpServletRequest request) {
+    @ApiOperation(value = "用户添加一个预约", notes = "用户同时应该只能有一个状态为未完成的预约单")
+    public WrapperResponse makeAppointment(@ApiParam(value = "预约单的内容") @RequestBody AppointmentParam appointmentParam, HttpServletRequest request) {
         logger.info("/customer/appointment");
         String customerId = Optional.of(request).map(r -> r.getHeader("id")).orElse(null);
         return customerService.makeAppointment(customerId, appointmentParam);
     }
 
     @PostMapping("/deleteAppointment")
-    public WrapperResponse deleteAppointment(int orderId, HttpServletRequest request) {
+    @ApiOperation(value = "用户取消一个预约", notes = "取消的预约单还在所有订单当中，只是状态标记为取消")
+    public WrapperResponse deleteAppointment(@ApiParam(value = "预约单的id") int orderId, HttpServletRequest request) {
         String customerId = Optional.of(request).map(r -> r.getHeader("id")).orElse(null);
         return customerService.deleteAppointment(customerId, orderId);
     }
 
     @PostMapping("/getCurrentAppointment")
+    @ApiOperation(value = "用户获取当前未完成的预约单", notes = "在header中传入用户的id")
     public WrapperResponse getCurrentAppointment(HttpServletRequest request) {
         String customerId = Optional.of(request).map(r -> r.getHeader("id")).orElse(null);
         return customerService.getCurrentAppointment(customerId);
     }
 
     @PostMapping("/modifyAppointment")
-    public WrapperResponse modifyAppointment(@RequestBody AppointmentParam appointmentParam, HttpServletRequest
-            request) {
+    @ApiOperation(value = "用户修改当前未完成的预约单", notes = "在header中传入用户的id")
+    public WrapperResponse modifyAppointment(@ApiParam(value = "预约单的内容") @RequestBody AppointmentParam appointmentParam,
+                                             HttpServletRequest request) {
         String customerId = Optional.of(request).map(r -> r.getHeader("id")).orElse(null);
         return customerService.modifyAppointment(customerId, appointmentParam);
     }
 
     @PostMapping("/getAppointments")
+    @ApiOperation(value = "用户获取自己的所有预约单", notes = "在header中传入用户的id")
     public WrapperResponse getAppointments(HttpServletRequest request) {
         String customerId = Optional.of(request).map(r -> r.getHeader("id")).orElse(null);
         return customerService.getAppointments(customerId);
     }
 
     @PostMapping("/reply")
-    public WrapperResponse reply(int appointmentId, String content, HttpServletRequest request) {
+    @ApiOperation(value = "用户给预约单添加一些评论回复", notes = "在header中传入用户的id")
+    public WrapperResponse reply(@ApiParam(value = "预约单的id") int appointmentId,
+                                 @ApiParam(value = "具体回复内容") String content, HttpServletRequest request) {
         String customerId = Optional.of(request).map(r -> r.getHeader("id")).orElse(null);
         return customerService.commentOnAppointment(customerId, appointmentId, content);
     }
