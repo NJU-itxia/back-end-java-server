@@ -94,7 +94,7 @@ public class CustomerService {
             logger.info("没有此预约单");
             return WrapperResponse.wrapFail();
         }
-        if (!StringUtils.equals(order.getCustomer(), customerId)) {
+        if (!StringUtils.equals(order.getPhone(), customerId)) {
             logger.info("不是此用户的预约单");
             return WrapperResponse.wrapFail();
         }
@@ -121,7 +121,7 @@ public class CustomerService {
      * @return 成功时，使用WrapperResponse.wrap封装获取到的预约单， 失败时，返回wrapFail
      */
     public WrapperResponse getCurrentAppointment(String customerId) {
-        if(StringUtils.isEmpty(customerId)) {
+        if (StringUtils.isEmpty(customerId)) {
             logger.info("用户id不能为空");
             return WrapperResponse.wrapFail();
         }
