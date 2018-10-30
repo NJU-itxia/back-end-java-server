@@ -14,6 +14,7 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -43,13 +44,18 @@ public class CustomerControllerTest {
      */
     @Test
     public void wrongParam() throws Exception {
-        mockMvc.perform(post("/customer/appointment"))
+        mockMvc.perform(put("/customer/appointment"))
                 .andExpect(status().is(400));
-        mockMvc.perform(post("/customer/appointment")
+        mockMvc.perform(put("/customer/appointment")
                 .header("id", "testCustomer"))
                 .andExpect(status().is(400));
     }
 
+    /**
+     * 测试接口/customer/appointment
+     *
+     * @throws Exception 可能的异常
+     */
     @Test
     public void makeAppointment() throws Exception {
         AppointmentParam param = AppointmentParam.builder()
@@ -62,7 +68,7 @@ public class CustomerControllerTest {
                 .deviceVersion("设备啦")
                 .file("no file")
                 .build();
-        mockMvc.perform(post("/customer/appointment")
+        mockMvc.perform(put("/customer/appointment")
                 .header("id", "testCustomer")
                 .characterEncoding("utf-8")
                 .content(JSONObject.toJSONString(param))
@@ -73,18 +79,30 @@ public class CustomerControllerTest {
                 .andReturn().getResponse().getContentAsString();
     }
 
+    /**
+     * 测试接口/customer/deleteAppointment
+     */
     @Test
     public void deleteAppointment() {
     }
 
+    /**
+     * 测试接口/customer/getCurrentAppointment
+     */
     @Test
     public void getCurrentAppointment() {
+
     }
 
+    /**
+     * 测试接口/customer/getAppointments
+     *
+     * @throws Exception 可能的异常
+     */
     @Test
-    public void getAppointmentsTest() throws Exception{
-        mockMvc.perform(post("/customer/getAppointments")
-                .header("id","15951814859"))
+    public void getAppointmentsTest() throws Exception {
+        mockMvc.perform(post("/customer/appointment/all")
+                .header("id", "15951814859"))
                 .andExpect(status().is(200))
                 .andDo(print());
     }

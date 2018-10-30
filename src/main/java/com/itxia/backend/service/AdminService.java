@@ -11,6 +11,9 @@ import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -42,7 +45,7 @@ public class AdminService {
      * @return 返回封装后的预约单
      */
     public WrapperResponse listAllOrder() {
-        var result = orderRepository.findAll();
+        var result = orderRepository.findAll(Pageable.unpaged());
         return WrapperResponse.wrap(result);
     }
 
@@ -135,5 +138,18 @@ public class AdminService {
         member.setPassword(newPassword);
         itxiaMemberRepository.save(member);
         return WrapperResponse.wrapSuccess();
+    }
+
+    /**
+     * 查询分页的维修单
+     * 按照最后修改时间降序排列
+     *
+     * @param pageNum  页码
+     * @param pageSize 页的大小
+     * @return 查询结果
+     */
+    public WrapperResponse listOrderBy(Integer pageNum, Integer pageSize) {
+        var result = orderRepository.findAll(PageRequest.of(pageNum, pageSize, Sort.Direction.DESC, "lastEditTime"));
+        return WrapperResponse.wrap(result);
     }
 }
