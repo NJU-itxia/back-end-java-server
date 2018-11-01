@@ -15,6 +15,7 @@ import java.util.Optional;
 
 /**
  * 处理/admin的请求
+ * APIOperation和ApiParam太丑了，得想办法改了
  */
 @RestController
 @RequestMapping("/admin")
@@ -36,6 +37,7 @@ public class AdminController {
     public WrapperResponse modifyPassword(@ApiParam(value = "当前的密码") String oldPassword,
                                           @ApiParam(value = "新密码") String newPassword,
                                           HttpServletRequest request) {
+
         String knightId = Optional.of(request).map(r -> r.getHeader("id")).orElse(null);
         return knightService.modifyPassword(knightId, oldPassword, newPassword);
     }

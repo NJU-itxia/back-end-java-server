@@ -157,5 +157,14 @@ public class Order {
             this.description = description;
             this.index = index;
         }
+
+        /**
+         * 是否为未完成的状态
+         *
+         * @return 返回结果
+         */
+        public boolean isUnfinished() {
+            return this == Status.CREATED || this == Status.ACCEPTED;
+        }
     }
 }
