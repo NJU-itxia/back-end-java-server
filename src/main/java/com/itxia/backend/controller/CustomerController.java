@@ -38,12 +38,20 @@ public class CustomerController {
         return customerService.makeAppointment(customerId, appointmentParam);
     }
 
+    @Deprecated
     @DeleteMapping("/appointment/{appointment}")
     @ApiOperation(value = "用户取消一个预约", notes = "取消的预约单还在所有订单当中，只是状态标记为取消")
     public WrapperResponse deleteAppointment(@ApiParam(value = "预约单的id") @PathVariable("appointment") Integer orderId,
                                              HttpServletRequest request) {
         String customerId = Optional.of(request).map(r -> r.getHeader("id")).orElse(null);
         return customerService.deleteAppointment(customerId, orderId);
+    }
+
+    @DeleteMapping("/appointment/current")
+    @ApiOperation(value = "用户取消当前预约", notes = "将当前预约状态标记为取消")
+    public WrapperResponse deleteCurrentAppointment(HttpServletRequest request) {
+        String customerId = Optional.of(request).map(r -> r.getHeader("id")).orElse(null);
+        return customerService.deleteCurrentAppointment(customerId);
     }
 
     @PostMapping("/appointment/current")

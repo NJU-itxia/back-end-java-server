@@ -40,9 +40,9 @@ public class AdminService {
     }
 
     /**
-     * 获取所有的预约单
+     * 获取所有的维修单
      *
-     * @return 返回封装后的预约单
+     * @return 返回封装后的维修单
      */
     public WrapperResponse listAllOrder() {
         var result = orderRepository.findAll(Pageable.unpaged());

@@ -69,10 +69,10 @@ public class KnightService {
      * 接单！
      * <p>
      * 任务：
-     * 1. 取出it侠用户和订单，如果为空，返回失败
-     * 2. 检查订单状态是否为 新创建 若否，返回失败
-     * 3. 将it侠账号写入订单中，修改订单状态
-     * 4. 存储订单
+     * 1. 取出it侠用户和维修单，如果为空，返回失败
+     * 2. 检查维修单状态是否为 新创建 若否，返回失败
+     * 3. 将it侠账号写入维修单中，修改维修单状态
+     * 4. 存储维修单
      *
      * @param knightId      IT侠账号
      * @param appointmentId 订单ID
@@ -104,17 +104,17 @@ public class KnightService {
     }
 
     /**
-     * 回复预约单
+     * 回复维修单
      * <p>
      * 任务：
      * 1. 如果参数为空，返回失败
-     * 2. 根据id，取出预约单和it侠用户
+     * 2. 根据id，取出维修单和it侠用户
      * 3. 如果为空，返回失败
-     * 4. 添加一条预约
+     * 4. 添加一条回复
      * 5. 返回成功
      * <p>
      * 注意：
-     * 1. 不一定要接了这个单的IT侠成员才可以恢复这个预约单
+     * 1. 不一定要接了这个单的IT侠成员才可以恢复这个维修单
      * 2. 回复查看时将按照时间顺序查看
      *
      * @param knightId      IT侠账号
@@ -129,7 +129,7 @@ public class KnightService {
         }
         var order = orderRepository.findById(appointmentId).orElse(null);
         if (order == null) {
-            logger.info("没有这个订单: " + appointmentId);
+            logger.info("没有这个维修单: " + appointmentId);
             return WrapperResponse.wrapFail();
         }
         var member = itxiaMemberRepository.findOneByLoginName(knightId);
