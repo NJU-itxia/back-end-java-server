@@ -48,12 +48,20 @@ public class AdminController {
         return adminService.listAllOrder();
     }
 
+    @ApiOperation(value = "后台用户所有维修单")
     @PostMapping("/appointment/page/{page}/size/{size}")
-    public WrapperResponse listAppointmentByPage(@ApiParam(value = "页码") @PathVariable("page") Integer pageNum,
-                                                 @ApiParam(value = "页的大小") @PathVariable("size") Integer pageSize,
-                                                 HttpServletRequest request) {
-        String knightId = Optional.of(request).map(r -> r.getHeader("id")).orElse(null);
+    public WrapperResponse listAppointmentByPage(
+            @ApiParam(value = "页码") @PathVariable("page") Integer pageNum,
+            @ApiParam(value = "页的大小") @PathVariable("size") Integer pageSize) {
         return adminService.listOrderBy(pageNum, pageSize);
+    }
+
+    @PostMapping("/appointment/location/{location}/page/{page}/size/{size}")
+    public WrapperResponse listAppointmentByLocation(
+            @ApiParam(value = "校区") @PathVariable("location") String location,
+            @ApiParam(value = "页码") @PathVariable("page") Integer pageNum,
+            @ApiParam(value = "页的大小") @PathVariable("size") Integer pageSize) {
+        return adminService.listOrderBy(location, pageNum, pageSize);
     }
 
     @ApiOperation(value = "后台用户接单", notes = "只能对状态为新创建的预约单进行此操作")
@@ -87,7 +95,8 @@ public class AdminController {
 
     @ApiOperation(value = "管理员账号查询所有后台用户", notes = "需要管理员权限")
     @PostMapping("/member/all")
-    public WrapperResponse listAllMembers() {
+    public WrapperResponse listAllMembers(String id) {
+        System.out.println(id);
         return adminService.listAllMembers();
     }
 

@@ -3,6 +3,7 @@ package com.itxia.backend.service;
 import com.itxia.backend.controller.vo.WrapperResponse;
 import com.itxia.backend.data.model.ItxiaMember;
 import com.itxia.backend.data.model.Location;
+import com.itxia.backend.data.model.Order;
 import com.itxia.backend.data.repo.ItxiaMemberRepository;
 import com.itxia.backend.data.repo.OrderRepository;
 import com.itxia.backend.util.PasswordUtil;
@@ -11,6 +12,7 @@ import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Example;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -96,6 +98,7 @@ public class AdminService {
      * 1. 使用itxiaMemberRepository获取所有成员
      * 2. 使用WrapperResponse封装后返回
      * 3. 成员列表为空也返回正确，列表为空即可
+     * 4. 权限都没控制。。
      *
      * @return 操作结果
      */
@@ -149,7 +152,33 @@ public class AdminService {
      * @return 查询结果
      */
     public WrapperResponse listOrderBy(Integer pageNum, Integer pageSize) {
-        var result = orderRepository.findAll(PageRequest.of(pageNum, pageSize, Sort.Direction.DESC, "lastEditTime"));
+        var result = orderRepository.findAll(
+                PageRequest.of(
+                        pageNum,
+                        pageSize,
+                        Sort.Direction.DESC,
+                        "lastEditTime"));
+        return WrapperResponse.wrap(result);
+    }
+
+    /**
+     * 查询校区的分页的维修单
+     *
+     * @param location 校区
+     * @param pageNum  页码
+     * @param pageSize 页的大小
+     * @return 查询结果
+     */
+    public WrapperResponse listOrderBy(String location, Integer pageNum, Integer pageSize) {
+        Location locationEnum = Location.fromValue(location);
+        if (locationEnum == Location.UNDEFINED) {
+            logger.info("校区错误");
+            return WrapperResponse.wrapFail();
+        }
+        Order example = Order.builder().locationRawValue(location).build();
+        var result = orderRepository.findAll(
+                Example.of(example),
+                PageRequest.of(pageNum, pageSize, Sort.Direction.DESC, "lastEditTime"));
         return WrapperResponse.wrap(result);
     }
 }
