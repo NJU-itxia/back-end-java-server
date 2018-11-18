@@ -153,6 +153,24 @@ public class Order {
 
         private int index;
 
+        public static Status fromIndex(int i) {
+            switch (i) {
+                case -1:
+                    return Status.UNDEFINED;
+                case 0:
+                    return Status.CREATED;
+                case 1:
+                    return Status.ACCEPTED;
+                case 2:
+                    return Status.FINISHED;
+                case 3:
+                    return Status.NO_SOLUTION;
+                case 4:
+                    return Status.CANCELED;
+            }
+            return Status.UNDEFINED;
+        }
+
         Status(String description, int index) {
             this.description = description;
             this.index = index;

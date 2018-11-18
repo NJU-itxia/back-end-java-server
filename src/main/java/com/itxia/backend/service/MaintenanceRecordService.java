@@ -56,12 +56,13 @@ public class MaintenanceRecordService {
      * <p>
      * 1. 查询是否已经生成过，否则直接生成
      * 2. 查询oss上是否确实有上一周的记录，如果没有，再生成一次
-     * 3. 拿到上一周的所有预约单
+     * 3. 拿到上一周的所有预约单，按校区、时间排序
      * 4. 关键信息变*
      * 5. 生成word
      * 6. 该放util的放util,毕竟以后可能要直接显示
      */
     @Scheduled(cron = "0 33 23 ? * MON")
+//    @Scheduled(cron = "5 * * ? * *")
     private void generateMaintenanceRecord() {
         Timestamp startTime = TimeUtil.lastWeekStartTime();
         Timestamp endTime = TimeUtil.lastWeekEndTime();

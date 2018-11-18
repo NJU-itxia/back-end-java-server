@@ -1,0 +1,8 @@
+package com.itxia.backend.data.repo;
+
+import com.itxia.backend.data.model.OrderQuery;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.repository.PagingAndSortingRepository;
+
+public interface OrderQueryRepository extends JpaRepository<OrderQuery, Integer>, PagingAndSortingRepository<OrderQuery, Integer> {
+}
