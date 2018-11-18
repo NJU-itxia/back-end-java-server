@@ -4,7 +4,9 @@ import com.itxia.backend.controller.vo.WrapperResponse;
 import com.itxia.backend.data.model.ItxiaMember;
 import com.itxia.backend.data.model.Location;
 import com.itxia.backend.data.model.Order;
+import com.itxia.backend.data.model.OrderQuery;
 import com.itxia.backend.data.repo.ItxiaMemberRepository;
+import com.itxia.backend.data.repo.OrderQueryRepository;
 import com.itxia.backend.data.repo.OrderRepository;
 import com.itxia.backend.util.PasswordUtil;
 import lombok.var;
@@ -12,10 +14,7 @@ import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Example;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -31,13 +30,16 @@ public class AdminService {
 
     private final OrderRepository orderRepository;
 
+    private final OrderQueryRepository orderQueryRepository;
+
     private final ItxiaMemberRepository itxiaMemberRepository;
 
     private final Logger logger = LoggerFactory.getLogger(AdminService.class);
 
     @Autowired
-    public AdminService(OrderRepository orderRepository, ItxiaMemberRepository itxiaMemberRepository) {
+    public AdminService(OrderRepository orderRepository, ItxiaMemberRepository itxiaMemberRepository, OrderQueryRepository orderQueryRepository) {
         this.orderRepository = orderRepository;
+        this.orderQueryRepository = orderQueryRepository;
         this.itxiaMemberRepository = itxiaMemberRepository;
     }
 
@@ -162,23 +164,44 @@ public class AdminService {
     }
 
     /**
-     * 查询校区的分页的维修单
+     * 查询校区、订单状态、搜索字符串的分页的维修单
      *
      * @param location 校区
+     * @param state    订单状态
+     * @param search   搜索字符串
      * @param pageNum  页码
      * @param pageSize 页的大小
      * @return 查询结果
      */
-    public WrapperResponse listOrderBy(String location, Integer pageNum, Integer pageSize) {
+    public WrapperResponse listOrderBy(String location, String state, String search, Integer pageNum, Integer pageSize) {
         Location locationEnum = Location.fromValue(location);
         if (locationEnum == Location.UNDEFINED) {
-            logger.info("校区错误");
+            logger.info("校区错误: " + location);
             return WrapperResponse.wrapFail();
         }
-        Order example = Order.builder().locationRawValue(location).build();
-        var result = orderRepository.findAll(
-                Example.of(example),
-                PageRequest.of(pageNum, pageSize, Sort.Direction.DESC, "lastEditTime"));
+        Order.Status status;
+        try {
+            status = Order.Status.valueOf(state);
+        } catch (Exception e) {
+            logger.info("错误的状态: " + state);
+            return WrapperResponse.wrapFail();
+        }
+        if ("null".equals(search)) {
+            search = null;
+        }
+        System.out.println(search);
+        OrderQuery example = OrderQuery.builder()
+                .location(location)
+                .status(status.getIndex())
+                .problemDescription(search).build();
+        ExampleMatcher exampleMatcher = ExampleMatcher.matching()
+                .withMatcher("location", ExampleMatcher.GenericPropertyMatchers.exact())
+                .withMatcher("status", ExampleMatcher.GenericPropertyMatchers.exact())
+                .withMatcher("problemDescription", ExampleMatcher.GenericPropertyMatchers.contains());
+        var result = orderQueryRepository.findAll(
+                Example.of(example, exampleMatcher),
+                PageRequest.of(pageNum, pageSize, Sort.Direction.DESC, "dateTime")
+        );
         return WrapperResponse.wrap(result);
     }
 }

@@ -56,12 +56,14 @@ public class AdminController {
         return adminService.listOrderBy(pageNum, pageSize);
     }
 
-    @PostMapping("/appointment/location/{location}/page/{page}/size/{size}")
-    public WrapperResponse listAppointmentByLocation(
+    @PostMapping("/appointment/location/{location}/state/{state}/search/{search}/page/{page}/size/{size}")
+    public WrapperResponse listAppointmentByCondition(
             @ApiParam(value = "校区") @PathVariable("location") String location,
+            @ApiParam(value = "状态") @PathVariable("state") String state,
+            @ApiParam(value = "搜索字符串") @PathVariable("search") String search,
             @ApiParam(value = "页码") @PathVariable("page") Integer pageNum,
             @ApiParam(value = "页的大小") @PathVariable("size") Integer pageSize) {
-        return adminService.listOrderBy(location, pageNum, pageSize);
+        return adminService.listOrderBy(location, state, search, pageNum, pageSize);
     }
 
     @ApiOperation(value = "后台用户接单", notes = "只能对状态为新创建的预约单进行此操作")
