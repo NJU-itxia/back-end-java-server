@@ -50,4 +50,28 @@ public class TimeUtil {
         dateTime = dateTime.dayOfWeek().withMaximumValue().minusWeeks(1).millisOfDay().withMaximumValue();
         return new Timestamp(dateTime.getMillis());
     }
+
+    /**
+     * 返回某一周的开始时间
+     *
+     * @param weekNum 周数
+     * @return 时间
+     */
+    public static Timestamp someWeekStartTime(int weekNum) {
+        DateTime dateTime = new DateTime();
+        dateTime = dateTime.dayOfWeek().withMinimumValue().withWeekOfWeekyear(weekNum).millisOfDay().withMinimumValue();
+        return new Timestamp(dateTime.getMillis());
+    }
+
+    /**
+     * 返回某一周的结束时间
+     *
+     * @param weekNum 周数
+     * @return 时间
+     */
+    public static Timestamp someWeekEndTime(int weekNum) {
+        DateTime dateTime = new DateTime();
+        dateTime = dateTime.dayOfWeek().withMaximumValue().withWeekOfWeekyear(weekNum).millisOfDay().withMaximumValue();
+        return new Timestamp(dateTime.getMillis());
+    }
 }
