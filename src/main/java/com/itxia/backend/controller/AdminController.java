@@ -4,6 +4,7 @@ import com.itxia.backend.controller.vo.WrapperResponse;
 import com.itxia.backend.data.model.Location;
 import com.itxia.backend.service.AdminService;
 import com.itxia.backend.service.KnightService;
+import com.itxia.backend.service.MaintenanceRecordService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -26,10 +27,13 @@ public class AdminController {
 
     private final AdminService adminService;
 
+    private final MaintenanceRecordService maintenanceRecordService;
+
     @Autowired
-    public AdminController(KnightService knightService, AdminService adminService) {
+    public AdminController(KnightService knightService, AdminService adminService, MaintenanceRecordService maintenanceRecordService) {
         this.knightService = knightService;
         this.adminService = adminService;
+        this.maintenanceRecordService = maintenanceRecordService;
     }
 
     @ApiOperation(value = "后台用户修改自己密码", notes = "这个是修改自己的密码的")
@@ -107,5 +111,10 @@ public class AdminController {
     public WrapperResponse modifyMemberPassword(@ApiParam(value = "IT侠账号的登录名") @PathVariable("member") String memberId,
                                                 @ApiParam(value = "新的密码") String newPassword) {
         return adminService.modifyMemberPassword(memberId, newPassword);
+    }
+
+    @PostMapping("/maintenance/upload/{week}")
+    public WrapperResponse uploadMaintenanceRecord(@PathVariable("week") Integer week) {
+        return maintenanceRecordService.generateMaintenanceRecord(week);
     }
 }

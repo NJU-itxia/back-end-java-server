@@ -1,6 +1,7 @@
 package com.itxia.backend.service;
 
 import com.aliyun.oss.OSSClient;
+import com.itxia.backend.controller.vo.WrapperResponse;
 import com.itxia.backend.data.model.Order;
 import com.itxia.backend.data.repo.OrderRepository;
 import com.itxia.backend.util.TimeUtil;
@@ -62,7 +63,6 @@ public class MaintenanceRecordService {
      * 6. 该放util的放util,毕竟以后可能要直接显示
      */
     @Scheduled(cron = "0 33 23 ? * MON")
-//    @Scheduled(cron = "5 * * ? * *")
     private void generateMaintenanceRecord() {
         Timestamp startTime = TimeUtil.lastWeekStartTime();
         Timestamp endTime = TimeUtil.lastWeekEndTime();
@@ -71,6 +71,23 @@ public class MaintenanceRecordService {
         StringBuilder builder = new StringBuilder();
         orders.stream().map(this::formatOrder).forEach(builder::append);
         this.upload(key, builder.toString());
+    }
+
+    /**
+     * 上传某一周的维修记录
+     *
+     * @param week 周数
+     * @return 是否成功
+     */
+    public WrapperResponse generateMaintenanceRecord(int week) {
+        Timestamp startTime = TimeUtil.someWeekStartTime(week);
+        Timestamp endTime = TimeUtil.someWeekEndTime(week);
+        List<Order> orders = orderRepository.findByLastEditTimeBetween(startTime, endTime);
+        String key = "maintenance_log/year" + TimeUtil.currentYearNum() + "_week" + week + ".txt";
+        StringBuilder builder = new StringBuilder();
+        orders.stream().map(this::formatOrder).forEach(builder::append);
+        this.upload(key, builder.toString());
+        return WrapperResponse.wrapSuccess();
     }
 
     /**
@@ -103,7 +120,7 @@ public class MaintenanceRecordService {
         builder.append(order.getOsVersion());
         builder.append("\r\n问题描述: ");
         builder.append(order.getProblemDescription());
-        builder.append("\r\n");
+        builder.append("\r\n\r\n");
         return builder.toString();
     }
 
