@@ -8,6 +8,7 @@ import org.joda.time.DateTimeZone;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
+import java.util.List;
 
 /**
  * 查询用的维修单实体
@@ -58,6 +59,11 @@ public class OrderQuery {
     private String phone;
 
     private Integer status;
+
+    @Getter
+    @OneToMany
+    @JoinColumn(name = "`ORDERID`")
+    private List<Reply> replyList;
 
     public String getTime() {
         DateTime dateTime = new DateTime(this.dateTime);
