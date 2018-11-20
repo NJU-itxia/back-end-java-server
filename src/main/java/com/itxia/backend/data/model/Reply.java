@@ -31,11 +31,13 @@ public class Reply {
     /**
      * 对应的预约单的id
      */
+    @Column(name = "`ORDERID`")
     private Integer orderId;
 
     /**
      * 回复的it侠的id
      */
+    @Column(name = "`ITXIAID`")
     private Integer itxiaId;
 
     /**
