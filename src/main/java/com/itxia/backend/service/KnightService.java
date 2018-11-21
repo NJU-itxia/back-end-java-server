@@ -128,19 +128,12 @@ public class KnightService {
             logger.info("空的参数");
             return WrapperResponse.wrapFail();
         }
-        int kid = 0;
-        try {
-            kid = Integer.parseInt(knightId);
-        }catch (Exception e) {
-            logger.info("IT侠ID不为数字");
-            return WrapperResponse.wrapFail();
-        }
         var order = orderRepository.findById(appointmentId).orElse(null);
         if (order == null) {
             logger.info("没有这个维修单: " + appointmentId);
             return WrapperResponse.wrapFail();
         }
-        var member = itxiaMemberRepository.findById(kid).orElse(null);
+        var member = itxiaMemberRepository.findOneByLoginName(knightId);
         if (member == null) {
             logger.info("没有这个IT侠账号: " + knightId);
             return WrapperResponse.wrapFail();
