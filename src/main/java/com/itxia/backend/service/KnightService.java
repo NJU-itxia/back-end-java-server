@@ -139,7 +139,7 @@ public class KnightService {
         }
         Reply reply = Reply.builder()
                 .content(content)
-                .itxiaId(member.getId())
+                .itxia(member)
                 .itxiaReply(true)
                 .orderId(appointmentId)
                 .replyTime(new Timestamp(System.currentTimeMillis()))
