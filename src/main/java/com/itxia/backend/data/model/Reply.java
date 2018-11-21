@@ -64,6 +64,9 @@ public class Reply {
     }
 
     public String getItxiaName() {
+        if(itxia == null) {
+            return "";
+        }
         return itxia.getName();
     }
 
