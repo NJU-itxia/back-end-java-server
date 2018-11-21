@@ -78,12 +78,12 @@ public class AdminController {
         return knightService.acceptAppointment(knightId, appointmentId);
     }
 
-    @PutMapping("/appointment/reply/{id}/{content}")
+    @PutMapping("/appointment/reply/{oid}/{content}")
     @ApiOperation(value = "后台用户对某一个预约单添加评论回复",
             notes = "用来给一个预约单添加解决问题的方式的回复、评论\n" +
                     "IT侠后台成员和此预约单的用户可以在订单的任意状态下添加评论\n" +
                     "调用此接口，请在header中设置id，表示IT侠用户的账号")
-    public WrapperResponse reply(@ApiParam(value = "预约单的id") @PathVariable("id") Integer appointmentId,
+    public WrapperResponse reply(@ApiParam(value = "预约单的id") @PathVariable("oid") Integer appointmentId,
                                  @ApiParam(value = "评论的具体内容") @PathVariable("content") String content,
                                  HttpServletRequest request) {
         String knightId = Optional.of(request).map(r -> r.getHeader("id")).orElse(null);

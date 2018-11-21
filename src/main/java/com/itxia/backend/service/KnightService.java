@@ -123,6 +123,7 @@ public class KnightService {
      * @return 返回操作结果
      */
     public WrapperResponse reply(String knightId, int appointmentId, String content) {
+        logger.info("reply called with params: " + knightId + "," + appointmentId + "," + content);
         if (StringUtils.isEmpty(knightId) || StringUtils.isEmpty(content)) {
             logger.info("空的参数");
             return WrapperResponse.wrapFail();
