@@ -147,6 +147,6 @@ public class KnightService {
                 .build();
         replyRepository.save(reply);
         logger.info("新的回复已保存");
-        return WrapperResponse.wrapFail();
+        return WrapperResponse.wrapSuccess();
     }
 }
