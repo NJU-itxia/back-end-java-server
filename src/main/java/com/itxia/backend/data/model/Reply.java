@@ -2,6 +2,10 @@ package com.itxia.backend.data.model;
 
 import lombok.Builder;
 import lombok.Data;
+import org.hibernate.annotations.NotFound;
+import org.hibernate.annotations.NotFoundAction;
+import org.joda.time.DateTime;
+import org.joda.time.DateTimeZone;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
@@ -35,10 +39,12 @@ public class Reply {
     private Integer orderId;
 
     /**
-     * 回复的it侠的id
+     * 回复的IT侠
      */
-    @Column(name = "`ITXIAID`")
-    private Integer itxiaId;
+    @OneToOne
+    @JoinColumn(name = "`ITXIAID`")
+    @NotFound(action = NotFoundAction.IGNORE)
+    private ItxiaMember itxia;
 
     /**
      * 回复时间
@@ -50,4 +56,18 @@ public class Reply {
      * 回复内容
      */
     private String content;
+
+    public String getReplyTime() {
+        DateTime dateTime = new DateTime(this.replyTime);
+        dateTime.withZone(DateTimeZone.forOffsetHours(8));
+        return dateTime.toString("yyyy-MM-dd HH:mm:ss");
+    }
+
+    public String getItxiaName() {
+        return itxia.getName();
+    }
+
+    private ItxiaMember getItxia() {
+        return null;
+    }
 }
