@@ -16,6 +16,7 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.criteria.JoinType;
 import javax.persistence.criteria.Path;
 import javax.persistence.criteria.Predicate;
 
@@ -69,7 +70,7 @@ public class AdminOrderService {
             Path<String> devicePath = root.get("deviceModel");
             Path<String> emailPath = root.get("email");
             Path<String> phonePath = root.get("phone");
-            Path<String> handlerPath = root.get("itxia").get("name");
+            Path<String> handlerPath = root.join("itxia", JoinType.LEFT).get("name");
             Path<String> problemDescription = root.get("problemDescription");
             Predicate locationPredict = criteriaBuilder.equal(locationPath, location);
             Predicate statusPredict = criteriaBuilder.equal(statusPath, status.getIndex());
