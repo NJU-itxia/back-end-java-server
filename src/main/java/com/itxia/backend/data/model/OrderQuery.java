@@ -11,6 +11,7 @@ import java.sql.Timestamp;
 import java.util.List;
 
 /**
+ * @author Yzh
  * 查询用的维修单实体
  */
 @Entity

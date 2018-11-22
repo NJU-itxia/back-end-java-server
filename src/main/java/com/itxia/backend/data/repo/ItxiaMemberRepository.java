@@ -8,6 +8,9 @@ import org.springframework.data.repository.query.Param;
 
 import java.util.List;
 
+/**
+ * @author Yzh
+ */
 public interface ItxiaMemberRepository extends JpaRepository<ItxiaMember, Integer> {
 
     /**

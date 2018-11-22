@@ -20,12 +20,13 @@ import org.springframework.transaction.annotation.Transactional;
 
 
 /**
+ * @author Yzh
  * 管理员账号的相关操作服务
  * 逻辑请在此处编写
  * 如果需要repository提供更多的条件查询功能，联系数据层的负责人
  */
 @Service
-@Transactional
+@Transactional(rollbackFor = {Throwable.class})
 public class AdminService {
 
     private final OrderRepository orderRepository;

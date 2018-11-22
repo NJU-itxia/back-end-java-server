@@ -15,10 +15,11 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 
 /**
+ * @author Yzh
  * 邮件服务，后面要改动，添加接口主要用于测试
  */
 @Service
-@Transactional
+@Transactional(rollbackFor = {Throwable.class})
 public class MailService {
 
     /**

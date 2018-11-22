@@ -7,6 +7,9 @@ import lombok.Getter;
 import javax.persistence.*;
 import java.sql.Timestamp;
 
+/**
+ * @author Yzh
+ */
 @Entity
 @Data
 @Builder
@@ -118,13 +121,7 @@ public class Order {
      * @param location 校区的字符串
      */
     public void setLocation(String location) {
-        if ("鼓楼".equals(location)) {
-            this.location = Location.GU_LOU;
-        } else if ("仙林".equals(location)) {
-            this.location = Location.XIAN_LIN;
-        } else {
-            this.location = Location.UNDEFINED;
-        }
+        this.location = Location.fromValue(location);
         this.locationRawValue = location;
     }
 
@@ -147,7 +144,35 @@ public class Order {
      */
     @Getter
     public enum Status {
-        FINISHED("已解决", 2), CREATED("新创建", 0), ACCEPTED("已接受", 1), NO_SOLUTION("无法解决", 3), CANCELED("用户取消", 4), UNDEFINED("未知", -1);
+        /**
+         * 已解决
+         */
+        FINISHED("已解决", 2),
+
+        /**
+         * 新创建
+         */
+        CREATED("新创建", 0),
+
+        /**
+         * 已接单的维修单
+         */
+        ACCEPTED("已接受", 1),
+
+        /**
+         * 无法解决的维修单
+         */
+        NO_SOLUTION("无法解决", 3),
+
+        /**
+         * 由用户取消的维修单
+         */
+        CANCELED("用户取消", 4),
+
+        /**
+         * 其他情况使用
+         */
+        UNDEFINED("未知", -1);
 
         private String description;
 
@@ -167,8 +192,9 @@ public class Order {
                     return Status.NO_SOLUTION;
                 case 4:
                     return Status.CANCELED;
+                default:
+                    return Status.UNDEFINED;
             }
-            return Status.UNDEFINED;
         }
 
         Status(String description, int index) {

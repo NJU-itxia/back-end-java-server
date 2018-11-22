@@ -11,6 +11,7 @@ import javax.persistence.*;
 import java.sql.Timestamp;
 
 /**
+ * @author Yzh
  * 预约单的评论/回复
  */
 @Entity

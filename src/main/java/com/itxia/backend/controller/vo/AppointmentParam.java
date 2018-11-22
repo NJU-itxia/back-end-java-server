@@ -4,6 +4,7 @@ import lombok.Builder;
 import lombok.Data;
 
 /**
+ * @author Yzh
  * 封装预约请求参数
  */
 @Data

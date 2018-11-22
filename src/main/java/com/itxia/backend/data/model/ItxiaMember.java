@@ -6,6 +6,7 @@ import lombok.Data;
 import javax.persistence.*;
 
 /**
+ * @author Yzh
  * IT侠成员model
  */
 @Entity

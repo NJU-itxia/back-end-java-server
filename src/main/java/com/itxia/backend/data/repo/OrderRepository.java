@@ -9,6 +9,9 @@ import org.springframework.data.repository.query.Param;
 import java.sql.Timestamp;
 import java.util.List;
 
+/**
+ * @author Yzh
+ */
 public interface OrderRepository extends JpaRepository<Order, Integer>, PagingAndSortingRepository<Order, Integer> {
 
     @Query("from Order o where o.phone = :userId")

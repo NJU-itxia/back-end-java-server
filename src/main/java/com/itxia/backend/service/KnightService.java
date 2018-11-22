@@ -17,10 +17,11 @@ import org.springframework.transaction.annotation.Transactional;
 import java.sql.Timestamp;
 
 /**
+ * @author Yzh
  * 非管理员it侠用户相关操作的服务
  */
 @Service
-@Transactional
+@Transactional(rollbackFor = Throwable.class)
 public class KnightService {
 
     private final ItxiaMemberRepository itxiaMemberRepository;

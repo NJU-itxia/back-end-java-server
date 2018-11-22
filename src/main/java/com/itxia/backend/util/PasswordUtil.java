@@ -12,6 +12,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
+ * @author Yzh
  * 和用户密码相关的工具类
  * 预计功能如下：
  * - 检查密码是否符合规则

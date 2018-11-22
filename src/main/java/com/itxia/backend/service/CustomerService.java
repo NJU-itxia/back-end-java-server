@@ -18,10 +18,11 @@ import java.sql.Timestamp;
 import java.util.stream.Collectors;
 
 /**
+ * @author Yzh
  * 用户相关的服务
  */
 @Service
-@Transactional
+@Transactional(rollbackFor = Throwable.class)
 public class CustomerService {
 
     private final OrderRepository orderRepository;

@@ -7,6 +7,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.stereotype.Component;
 
 /**
+ * @author Yzh
  * 在Util中使用properties里面的配置，从这个类中获取
  * StaticConf负责将properties里面的配置读入
  * 目前只有一个StringEncryptor需要这个操作

@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.ArrayList;
 
 /**
+ * @author Yzh
  * 邮件服务的controller
  */
 @RestController
