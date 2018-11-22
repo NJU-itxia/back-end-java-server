@@ -2,6 +2,7 @@ package com.itxia.backend.controller;
 
 import com.itxia.backend.controller.vo.WrapperResponse;
 import com.itxia.backend.data.model.Location;
+import com.itxia.backend.service.AdminOrderService;
 import com.itxia.backend.service.AdminService;
 import com.itxia.backend.service.KnightService;
 import com.itxia.backend.service.MaintenanceRecordService;
@@ -30,12 +31,16 @@ public class AdminController {
 
     private final AdminService adminService;
 
+    private final AdminOrderService adminOrderService;
+
     private final MaintenanceRecordService maintenanceRecordService;
 
     @Autowired
-    public AdminController(KnightService knightService, AdminService adminService, MaintenanceRecordService maintenanceRecordService) {
+    public AdminController(KnightService knightService, AdminService adminService, AdminOrderService adminOrderService,
+                           MaintenanceRecordService maintenanceRecordService) {
         this.knightService = knightService;
         this.adminService = adminService;
+        this.adminOrderService = adminOrderService;
         this.maintenanceRecordService = maintenanceRecordService;
     }
 
@@ -71,7 +76,7 @@ public class AdminController {
             @ApiParam(value = PARAM_APM_BY_COND_SEARCH) @PathVariable("search") String search,
             @ApiParam(value = PARAM_APM_BY_COND_PAGE) @PathVariable("page") Integer pageNum,
             @ApiParam(value = PARAM_APM_BY_COND_SIZE) @PathVariable("size") Integer pageSize) {
-        return adminService.listOrderBy(location, state, search, pageNum, pageSize);
+        return adminOrderService.searchOrder(location, state, search, pageNum, pageSize);
     }
 
     @ApiOperation(value = METHOD_ACT_APM, notes = NOTES_ACT_APM)

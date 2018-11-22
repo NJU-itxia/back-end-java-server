@@ -174,6 +174,7 @@ public class AdminService {
      * @param pageSize 页的大小
      * @return 查询结果
      */
+    @Deprecated
     public WrapperResponse listOrderBy(String location, String state, String search, Integer pageNum, Integer pageSize) {
         Location locationEnum = Location.fromValue(location);
         if (locationEnum == Location.UNDEFINED) {
@@ -190,7 +191,6 @@ public class AdminService {
         if ("null".equals(search)) {
             search = null;
         }
-        System.out.println(search);
         OrderQuery example = OrderQuery.builder()
                 .location(location)
                 .status(status.getIndex())
