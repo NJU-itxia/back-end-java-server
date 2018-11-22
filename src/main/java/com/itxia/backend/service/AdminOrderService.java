@@ -59,7 +59,7 @@ public class AdminOrderService {
         if ("null".equals(search)) {
             search = null;
         }
-        final String searchString = search == null ? null : "%" + search.toUpperCase() + "%";
+        final String searchString = search == null ? "%%" : "%" + search.toUpperCase() + "%";
         Pageable pageable = PageRequest.of(pageNum, pageSize, Sort.Direction.DESC, "dateTime");
         Specification<OrderQuery> specification = (root, criteriaQuery, criteriaBuilder) -> {
             Path<String> locationPath = root.get("location");
