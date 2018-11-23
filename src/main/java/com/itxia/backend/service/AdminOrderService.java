@@ -19,6 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.persistence.criteria.JoinType;
 import javax.persistence.criteria.Path;
 import javax.persistence.criteria.Predicate;
+import java.util.stream.Stream;
 
 /**
  * @author Yzh
@@ -65,24 +66,20 @@ public class AdminOrderService {
         Specification<OrderQuery> specification = (root, criteriaQuery, criteriaBuilder) -> {
             Path<String> locationPath = root.get("location");
             Path<String> statusPath = root.get("status");
-            Path<String> namePath = root.get("customer");
-            Path<String> osPath = root.get("osVersion");
-            Path<String> devicePath = root.get("deviceModel");
-            Path<String> emailPath = root.get("email");
-            Path<String> phonePath = root.get("phone");
-            Path<String> handlerPath = root.join("itxia", JoinType.LEFT).get("name");
-            Path<String> problemDescription = root.get("problemDescription");
             Predicate locationPredict = criteriaBuilder.equal(locationPath, location);
             Predicate statusPredict = criteriaBuilder.equal(statusPath, status.getIndex());
-            Predicate osPredict = criteriaBuilder.like(criteriaBuilder.upper(osPath), searchString);
-            Predicate devicePredict = criteriaBuilder.like(criteriaBuilder.upper(devicePath), searchString);
-            Predicate emailPredict = criteriaBuilder.like(criteriaBuilder.upper(emailPath), searchString);
-            Predicate phonePredict = criteriaBuilder.like(criteriaBuilder.upper(phonePath), searchString);
-            Predicate namePredict = criteriaBuilder.like(criteriaBuilder.upper(namePath), searchString);
+
+            Predicate predicate = Stream.of("customer", "osVersion", "deviceModel", "email", "phone", "problemDescription")
+                    .map(p -> {
+                        Path<String> path = root.get(p);
+                        return criteriaBuilder.like(criteriaBuilder.upper(path), searchString);
+                    })
+                    .reduce(criteriaBuilder::or).orElse(null);
+
+            Path<String> handlerPath = root.join("itxia", JoinType.LEFT).get("name");
             Predicate handlerPredict = criteriaBuilder.like(criteriaBuilder.upper(handlerPath), searchString);
-            Predicate problemPredict = criteriaBuilder.like(criteriaBuilder.upper(problemDescription), searchString);
-            Predicate searchPredict = criteriaBuilder.or(osPredict, devicePredict, emailPredict, phonePredict,
-                    handlerPredict, problemPredict, namePredict);
+            Predicate searchPredict = criteriaBuilder.or(predicate, handlerPredict);
+
             return criteriaBuilder.and(locationPredict, statusPredict, searchPredict);
         };
         var result = orderQueryRepository.findAll(specification, pageable);

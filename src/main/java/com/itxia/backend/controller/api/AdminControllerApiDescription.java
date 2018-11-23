@@ -51,4 +51,11 @@ public class AdminControllerApiDescription {
     public static final String PARAM_MOD_MBR_PWD_PWD = "新的密码";
 
     public static final String METHOD_RCD_UPLOAD = "上传维修记录至OSS";
+    public static final String NOTES_RCD_UPLOAD = "感觉这个功能没有什么用，不如直接显示出来";
+    public static final String PARAM_RCD_UPLOAD_WEEK = "这一年的第几个周";
+
+    public static final String METHOD_APM_NUM = "获取不同状态的维修单的数量";
+    public static final String NOTES_APM_NUM = "根据校区/维修单状态来获取";
+    public static final String PARAM_APM_NUM_LOC = "校区，可以是仙林、鼓楼、全部";
+    public static final String PARAM_APM_NUM_STATE = "维修单状态，必须是CREATED，ACCEPTED,或FINISHED";
 }

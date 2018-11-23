@@ -13,6 +13,8 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletRequest;
 import java.util.Optional;
 
+import static com.itxia.backend.controller.api.CustomerControllerApiDescription.*;
+
 /**
  * @author Yzh
  * 处理/customer的请求
@@ -31,8 +33,8 @@ public class CustomerController {
     }
 
     @PutMapping("/appointment")
-    @ApiOperation(value = "用户添加一个预约", notes = "用户同时应该只能有一个状态为未完成的预约单")
-    public WrapperResponse makeAppointment(@ApiParam(value = "预约单的内容") @RequestBody AppointmentParam appointmentParam,
+    @ApiOperation(value = METHOD_MAKE_APM, notes = NOTES_MAKE_APM)
+    public WrapperResponse makeAppointment(@ApiParam(value = PARAM_MAKE_APM) @RequestBody AppointmentParam appointmentParam,
                                            HttpServletRequest request) {
         logger.info("/customer/appointment");
         String customerId = Optional.of(request).map(r -> r.getHeader("id")).orElse(null);
@@ -41,46 +43,46 @@ public class CustomerController {
 
     @Deprecated
     @DeleteMapping("/appointment/{appointment}")
-    @ApiOperation(value = "用户取消一个预约", notes = "取消的预约单还在所有订单当中，只是状态标记为取消")
-    public WrapperResponse deleteAppointment(@ApiParam(value = "预约单的id") @PathVariable("appointment") Integer orderId,
+    @ApiOperation(value = METHOD_CANCEL_APM, notes = NOTES_CANCEL_APM)
+    public WrapperResponse deleteAppointment(@ApiParam(value = PARAM_CANCEL_APM_ID) @PathVariable("appointment") Integer orderId,
                                              HttpServletRequest request) {
         String customerId = Optional.of(request).map(r -> r.getHeader("id")).orElse(null);
         return customerService.deleteAppointment(customerId, orderId);
     }
 
     @DeleteMapping("/appointment/current")
-    @ApiOperation(value = "用户取消当前预约", notes = "将当前预约状态标记为取消")
+    @ApiOperation(value = METHOD_CANCEL_CUR_APM, notes = NOTES_CANCEL_CUR_APM)
     public WrapperResponse deleteCurrentAppointment(HttpServletRequest request) {
         String customerId = Optional.of(request).map(r -> r.getHeader("id")).orElse(null);
         return customerService.deleteCurrentAppointment(customerId);
     }
 
     @PostMapping("/appointment/current")
-    @ApiOperation(value = "用户获取当前未完成的预约单", notes = "在header中传入用户的id")
+    @ApiOperation(value = METHOD_CUR_APM, notes = NOTES_CUR_APM)
     public WrapperResponse getCurrentAppointment(HttpServletRequest request) {
         String customerId = Optional.of(request).map(r -> r.getHeader("id")).orElse(null);
         return customerService.getCurrentAppointment(customerId);
     }
 
     @PostMapping("/appointment/update")
-    @ApiOperation(value = "用户修改当前未完成的预约单", notes = "在header中传入用户的id")
-    public WrapperResponse modifyAppointment(@ApiParam(value = "预约单的内容") @RequestBody AppointmentParam appointmentParam,
+    @ApiOperation(value = METHOD_MOD_APM, notes = NOTES_MOD_APM)
+    public WrapperResponse modifyAppointment(@ApiParam(value = PARAM_MOD_APM_CTN) @RequestBody AppointmentParam appointmentParam,
                                              HttpServletRequest request) {
         String customerId = Optional.of(request).map(r -> r.getHeader("id")).orElse(null);
         return customerService.modifyAppointment(customerId, appointmentParam);
     }
 
     @PostMapping("/appointment/all")
-    @ApiOperation(value = "用户获取自己的所有预约单", notes = "在header中传入用户的id")
+    @ApiOperation(value = METHOD_ALL_APM, notes = NOTES_ALL_APM)
     public WrapperResponse getAppointments(HttpServletRequest request) {
         String customerId = Optional.of(request).map(r -> r.getHeader("id")).orElse(null);
         return customerService.getAppointments(customerId);
     }
 
     @PutMapping("/appointment/reply/{id}/{content}")
-    @ApiOperation(value = "用户给预约单添加一些评论回复", notes = "在header中传入用户的id")
-    public WrapperResponse reply(@ApiParam(value = "预约单的id") @PathVariable("id") Integer appointmentId,
-                                 @ApiParam(value = "具体回复内容") @PathVariable("content") String content,
+    @ApiOperation(value = METHOD_REPLY, notes = NOTES_REPLY)
+    public WrapperResponse reply(@ApiParam(value = PARAM_REPLY_ID) @PathVariable("id") Integer appointmentId,
+                                 @ApiParam(value = PARAM_REPLY_CTN) @PathVariable("content") String content,
                                  HttpServletRequest request) {
         String customerId = Optional.of(request).map(r -> r.getHeader("id")).orElse(null);
         return customerService.commentOnAppointment(customerId, appointmentId, content);

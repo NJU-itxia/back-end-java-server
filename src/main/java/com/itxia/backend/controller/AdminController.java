@@ -20,7 +20,6 @@ import static com.itxia.backend.controller.api.AdminControllerApiDescription.*;
 /**
  * @author Yzh
  * 处理/admin的请求
- * APIOperation和ApiParam太丑了，得想办法改了
  */
 @RestController
 @RequestMapping("/admin")
@@ -68,6 +67,15 @@ public class AdminController {
         return adminService.listOrderBy(pageNum, pageSize);
     }
 
+
+    @ApiOperation(value = METHOD_APM_NUM, notes = NOTES_APM_NUM)
+    @PostMapping("/appointment/location/{location}/state/{state}")
+    public WrapperResponse getAppointmentNum(
+            @ApiParam(value = PARAM_APM_NUM_LOC) @PathVariable("location") String location,
+            @ApiParam(value = PARAM_APM_NUM_STATE) @PathVariable("state") String state) {
+        return null;
+    }
+
     @ApiOperation(value = METHOD_APM_BY_COND)
     @PostMapping("/appointment/location/{location}/state/{state}/search/{search}/page/{page}/size/{size}")
     public WrapperResponse listAppointmentByCondition(
@@ -108,7 +116,6 @@ public class AdminController {
     @ApiOperation(value = METHOD_MBR_ALL, notes = NOTES_MBR_ALL)
     @PostMapping("/member/all")
     public WrapperResponse listAllMembers(String id) {
-        System.out.println(id);
         return adminService.listAllMembers();
     }
 
@@ -119,9 +126,9 @@ public class AdminController {
         return adminService.modifyMemberPassword(memberId, newPassword);
     }
 
-    @ApiOperation(value = METHOD_RCD_UPLOAD)
+    @ApiOperation(value = METHOD_RCD_UPLOAD, notes = NOTES_RCD_UPLOAD)
     @PostMapping("/maintenance/upload/{week}")
-    public WrapperResponse uploadMaintenanceRecord(@PathVariable("week") Integer week) {
+    public WrapperResponse uploadMaintenanceRecord(@ApiParam(value = PARAM_RCD_UPLOAD_WEEK) @PathVariable("week") Integer week) {
         return maintenanceRecordService.generateMaintenanceRecord(week);
     }
 }
