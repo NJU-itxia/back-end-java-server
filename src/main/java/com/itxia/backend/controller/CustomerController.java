@@ -3,6 +3,7 @@ package com.itxia.backend.controller;
 import com.itxia.backend.controller.vo.AppointmentParam;
 import com.itxia.backend.controller.vo.WrapperResponse;
 import com.itxia.backend.service.CustomerService;
+import com.itxia.backend.service.SmsService;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import org.slf4j.Logger;
@@ -25,11 +26,14 @@ public class CustomerController {
 
     private final CustomerService customerService;
 
+    private final SmsService smsService;
+
     private static final Logger logger = LoggerFactory.getLogger(CustomerController.class);
 
     @Autowired
-    public CustomerController(CustomerService customerService) {
+    public CustomerController(CustomerService customerService, SmsService smsService) {
         this.customerService = customerService;
+        this.smsService = smsService;
     }
 
     @PutMapping("/appointment")
@@ -86,5 +90,15 @@ public class CustomerController {
                                  HttpServletRequest request) {
         String customerId = Optional.of(request).map(r -> r.getHeader("id")).orElse(null);
         return customerService.commentOnAppointment(customerId, appointmentId, content);
+    }
+
+    @PostMapping("/login/code")
+    public WrapperResponse sendCode(String phone) {
+        return smsService.requestLogin(phone);
+    }
+
+    @PostMapping("/login/test")
+    public WrapperResponse login(String phone, String code) {
+        return smsService.loginWithCode(phone, code);
     }
 }

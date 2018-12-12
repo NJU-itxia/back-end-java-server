@@ -31,6 +31,10 @@ public class PasswordUtil {
     private static final Logger logger = LoggerFactory.getLogger(PasswordUtil.class);
     private static StringEncryptor stringEncryptor;
 
+    private static final Pattern CHAR_AND_NUM_PATTERN = Pattern.compile("[^a-zA-Z0-9]");
+    private static final Pattern CHARACTER_PATTERN = Pattern.compile("[a-zA-Z]");
+    private static final Pattern NUMBER_PATTERN = Pattern.compile("[0-9]");
+
     /**
      * 配置从此处获得
      */
@@ -61,20 +65,17 @@ public class PasswordUtil {
             logger.info("密码长度不在8-16区间");
             return false;
         }
-        Pattern charAndNum = Pattern.compile("[^a-zA-Z0-9]");
-        Matcher charAndNumMatcher = charAndNum.matcher(password.substring(0, 1));
+        Matcher charAndNumMatcher = CHAR_AND_NUM_PATTERN.matcher(password.substring(0, 1));
         if (charAndNumMatcher.find()) {
             logger.info("密码不得以特殊字符开头");
             return false;
         }
-        Pattern character = Pattern.compile("[a-zA-Z]");
-        Matcher characterMatcher = character.matcher(password);
+        Matcher characterMatcher = CHARACTER_PATTERN.matcher(password);
         if (!characterMatcher.find()) {
             logger.info("没有包含英文字母");
             return false;
         }
-        Pattern number = Pattern.compile("[0-9]");
-        Matcher numberMatcher = number.matcher(password);
+        Matcher numberMatcher = NUMBER_PATTERN.matcher(password);
         if (!numberMatcher.find()) {
             logger.info("没有包含数字");
             return false;
