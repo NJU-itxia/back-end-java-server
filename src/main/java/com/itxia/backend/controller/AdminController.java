@@ -43,6 +43,12 @@ public class AdminController {
         this.maintenanceRecordService = maintenanceRecordService;
     }
 
+    @PostMapping("/info")
+    public WrapperResponse loadInfo(HttpServletRequest request) {
+        String knightId = Optional.of(request).map(r -> r.getHeader("id")).orElse(null);
+        return knightService.getSelfInfo(knightId);
+    }
+
     @ApiOperation(value = METHOD_MOD_PWD, notes = NOTES_MOD_PWD)
     @PostMapping("/password/modify")
     public WrapperResponse modifyPassword(@ApiParam(value = PARAM_MOD_PWD_OLD_PWD) String oldPassword,
@@ -93,6 +99,13 @@ public class AdminController {
                                              HttpServletRequest request) {
         String knightId = Optional.of(request).map(r -> r.getHeader("id")).orElse(null);
         return knightService.acceptAppointment(knightId, appointmentId);
+    }
+
+    @PostMapping("/appointment/finish/{id}")
+    public WrapperResponse finishAppointment(@ApiParam(value = PARAM_ACT_APM_ID) @PathVariable("id") Integer appointmentId,
+                                             HttpServletRequest request) {
+        String knightId = Optional.of(request).map(r -> r.getHeader("id")).orElse(null);
+        return knightService.finishAppointment(knightId, appointmentId);
     }
 
     @PutMapping("/appointment/reply/{oid}/{content}")

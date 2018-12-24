@@ -12,6 +12,7 @@ import java.time.LocalDateTime;
 /**
  * @author Yzh
  * 用户登录记录
+ *
  */
 @Entity
 @Builder
