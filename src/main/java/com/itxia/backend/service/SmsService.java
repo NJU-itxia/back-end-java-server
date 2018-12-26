@@ -51,6 +51,7 @@ public class SmsService {
      * @return 返回结果
      */
     public WrapperResponse requestLogin(String phone) {
+        System.out.println(phone);
         LocalDateTime lastMinute = LocalDateTime.now().minusMinutes(1);
         var request = loginRequestRepository.findOneAfterTimeByPhone(phone, lastMinute);
         if (request != null) {
@@ -59,6 +60,7 @@ public class SmsService {
         String randomCode = RandomUtil.getRandomCode(6);
         boolean success = sendSms(phone, randomCode);
         if (!success) {
+            System.out.println("sth wrong");
             return WrapperResponse.wrapFail();
         }
         LocalDateTime now = LocalDateTime.now();
@@ -126,6 +128,8 @@ public class SmsService {
             if (sendSmsResponse.getCode() != null && okString.equals(sendSmsResponse.getCode())) {
                 return true;
             }
+            System.out.println(sendSmsResponse.getCode());
+            System.out.println(sendSmsResponse.getMessage());
             return false;
         } catch (ClientException e) {
             e.printStackTrace();

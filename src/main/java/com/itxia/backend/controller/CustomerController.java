@@ -6,6 +6,7 @@ import com.itxia.backend.service.CustomerService;
 import com.itxia.backend.service.SmsService;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
+import lombok.var;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -97,8 +98,9 @@ public class CustomerController {
         return smsService.requestLogin(phone);
     }
 
-    @PostMapping("/login/test")
-    public WrapperResponse login(String phone, String code) {
-        return smsService.loginWithCode(phone, code);
+    @PostMapping("/login/verify/{phone}/{code}")
+    public WrapperResponse login(@PathVariable("phone") String phone, @PathVariable("code") String code) {
+        var result = smsService.loginWithCode(phone, code);
+        return WrapperResponse.wrapSuccess();
     }
 }
