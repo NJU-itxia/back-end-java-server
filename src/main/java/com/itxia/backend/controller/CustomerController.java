@@ -81,7 +81,13 @@ public class CustomerController {
     @ApiOperation(value = METHOD_ALL_APM, notes = NOTES_ALL_APM)
     public WrapperResponse getAppointments(HttpServletRequest request) {
         String customerId = Optional.of(request).map(r -> r.getHeader("id")).orElse(null);
-        return customerService.getAppointments(customerId);
+        return customerService.getAppointments(customerId, 0, 10);
+    }
+
+    @PostMapping("/appointment/num")
+    public WrapperResponse getAppointmentNum(HttpServletRequest request) {
+        String customerId = Optional.of(request).map(r -> r.getHeader("id")).orElse(null);
+        return customerService.getAppointmentNum(customerId);
     }
 
     @PutMapping("/appointment/reply/{id}/{content}")

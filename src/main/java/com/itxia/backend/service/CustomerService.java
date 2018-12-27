@@ -3,7 +3,9 @@ package com.itxia.backend.service;
 import com.itxia.backend.controller.vo.AppointmentParam;
 import com.itxia.backend.controller.vo.WrapperResponse;
 import com.itxia.backend.data.model.Order;
+import com.itxia.backend.data.model.OrderQuery;
 import com.itxia.backend.data.model.Reply;
+import com.itxia.backend.data.repo.OrderQueryRepository;
 import com.itxia.backend.data.repo.OrderRepository;
 import com.itxia.backend.data.repo.ReplyRepository;
 import lombok.var;
@@ -11,6 +13,10 @@ import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Example;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -27,14 +33,17 @@ public class CustomerService {
 
     private final OrderRepository orderRepository;
 
+    private final OrderQueryRepository orderQueryRepository;
+
     private final ReplyRepository replyRepository;
 
     private static final Logger logger = LoggerFactory.getLogger(CustomerService.class);
 
     @Autowired
-    public CustomerService(OrderRepository orderRepository, ReplyRepository replyRepository) {
+    public CustomerService(OrderRepository orderRepository, ReplyRepository replyRepository, OrderQueryRepository orderQueryRepository) {
         this.orderRepository = orderRepository;
         this.replyRepository = replyRepository;
+        this.orderQueryRepository = orderQueryRepository;
     }
 
     /**
@@ -221,17 +230,18 @@ public class CustomerService {
      * @param customerId 用户id
      * @return 返回查询结果
      */
-    public WrapperResponse getAppointments(String customerId) {
-        System.out.println(customerId);
+    public WrapperResponse getAppointments(String customerId, int pageNum, int pageSize) {
         if (customerId == null) {
             logger.info("用户不能为空");
             return WrapperResponse.wrapFail();
         }
-        var allAppointments = orderRepository.findAll();
-        var result = allAppointments.stream()
-                .filter(a -> customerId.equals(a.getPhone()))
-                .collect(Collectors.toList());
-        return WrapperResponse.wrap(result);
+        OrderQuery example = OrderQuery.builder()
+                .phone(customerId).build();
+        var allAppointments = orderQueryRepository.findAll(
+                Example.of(example),
+                PageRequest.of(pageNum, pageSize, Sort.Direction.DESC, "dateTime")
+        );
+        return WrapperResponse.wrap(allAppointments);
     }
 
     /**
@@ -272,4 +282,17 @@ public class CustomerService {
         return WrapperResponse.wrapSuccess();
     }
 
+    public WrapperResponse getAppointmentNum(String customerId) {
+        if (customerId == null) {
+            logger.info("用户不能为空");
+            return WrapperResponse.wrapFail();
+        }
+        OrderQuery example = OrderQuery.builder()
+                .phone(customerId).build();
+        var allAppointments = orderQueryRepository.findAll(
+                Example.of(example),
+                Pageable.unpaged()
+        );
+        return WrapperResponse.wrap(allAppointments.getTotalElements());
+    }
 }
