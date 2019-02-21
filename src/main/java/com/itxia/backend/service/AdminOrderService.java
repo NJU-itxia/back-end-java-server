@@ -57,9 +57,9 @@ public class AdminOrderService {
         if ("null".equals(search)) {
             search = null;
         }
-        if(status == Order.Status.ACCEPTED) {
+        if (status == Order.Status.ACCEPTED) {
             return searchOrderWithHandlerFirst(locationEnum, status, search, pageNum, pageSize, handler);
-        }else {
+        } else {
             return searchOrderNormal(locationEnum, status, search, pageNum, pageSize);
         }
     }
@@ -70,24 +70,29 @@ public class AdminOrderService {
         Specification<OrderQuery> specification = getSpecification(location, status, searchString);
         var result = orderQueryRepository.findAll(specification);
         result.sort((o1, o2) -> {
-            if(o1.isHandler(handler)) {
+            if (o1.isHandler(handler)) {
                 return -1;
-            }else if(o2.isHandler(handler)) {
+            } else if (o2.isHandler(handler)) {
                 return 1;
-            }else {
+            } else {
                 return o2.getTime().compareTo(o1.getTime());
             }
         });
         int size = result.size();
-        result = result.subList(pageNum * pageSize, (pageNum + 1) * pageSize);
+        int toIndex = ((pageNum + 1) * pageSize);
+        if (toIndex > size) {
+            toIndex = size;
+        }
+        result = result.subList(pageNum * pageSize, toIndex);
         Page<OrderQuery> page = new PageImpl<>(result, PageRequest.of(pageNum, pageSize), size);
         return WrapperResponse.wrap(page);
     }
 
     /**
      * 按照校区，维修单状态，搜索的字符串，页码和页数来查询维修单
+     *
      * @param location 校区
-     * @param status    维修单状态
+     * @param status   维修单状态
      * @param search   查询字符串
      * @param pageNum  页码
      * @param pageSize 页的大小
@@ -147,7 +152,7 @@ public class AdminOrderService {
 
             if (location == Location.ALL) {
                 return criteriaBuilder.and(statusPredict, searchPredict);
-            }else {
+            } else {
                 return criteriaBuilder.and(locationPredict, statusPredict, searchPredict);
             }
         };
