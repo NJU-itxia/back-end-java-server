@@ -75,11 +75,11 @@ public class AdminController {
 
 
     @ApiOperation(value = METHOD_APM_NUM, notes = NOTES_APM_NUM)
-    @PostMapping("/appointment/location/{location}/state/{state}")
+    @PostMapping("/appointment/location/{location}/search/{search}")
     public WrapperResponse getAppointmentNum(
             @ApiParam(value = PARAM_APM_NUM_LOC) @PathVariable("location") String location,
-            @ApiParam(value = PARAM_APM_NUM_STATE) @PathVariable("state") String state) {
-        return null;
+            @ApiParam(value = "") @PathVariable("search") String search) {
+        return adminOrderService.getSearchNumber(location, search);
     }
 
     @ApiOperation(value = METHOD_APM_BY_COND)
@@ -140,8 +140,11 @@ public class AdminController {
     }
 
     @ApiOperation(value = METHOD_RCD_UPLOAD, notes = NOTES_RCD_UPLOAD)
-    @PostMapping("/maintenance/upload/{week}")
-    public WrapperResponse uploadMaintenanceRecord(@ApiParam(value = PARAM_RCD_UPLOAD_WEEK) @PathVariable("week") Integer week) {
-        return maintenanceRecordService.generateMaintenanceRecord(week);
+    @PostMapping("/maintenance/upload/{year}/{week}")
+    public WrapperResponse uploadMaintenanceRecord(
+            @PathVariable("year") Integer year,
+            @ApiParam(value = PARAM_RCD_UPLOAD_WEEK) @PathVariable("week") Integer week
+    ) {
+        return maintenanceRecordService.generateMaintenanceRecord(year, week);
     }
 }

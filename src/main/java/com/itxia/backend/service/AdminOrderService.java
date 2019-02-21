@@ -19,6 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.persistence.criteria.JoinType;
 import javax.persistence.criteria.Path;
 import javax.persistence.criteria.Predicate;
+import java.util.HashMap;
 import java.util.stream.Stream;
 
 /**
@@ -63,10 +64,42 @@ public class AdminOrderService {
         }
         final String searchString = search == null ? "%%" : "%" + search.toUpperCase() + "%";
         Pageable pageable = PageRequest.of(pageNum, pageSize, Sort.Direction.DESC, "dateTime");
-        Specification<OrderQuery> specification = (root, criteriaQuery, criteriaBuilder) -> {
+        Specification<OrderQuery> specification = getSpecification(locationEnum, status, searchString);
+        var result = orderQueryRepository.findAll(specification, pageable);
+        return WrapperResponse.wrap(result);
+    }
+
+    /**
+     * 查询维修单的数量
+     *
+     * @param location 校区
+     * @param search   搜索的字符串
+     * @return 查询结果
+     */
+    public WrapperResponse getSearchNumber(String location, String search) {
+        Location locationEnum = Location.fromValue(location);
+        if (locationEnum == Location.UNDEFINED) {
+            logger.info("校区错误: " + location);
+            return WrapperResponse.wrapFail();
+        }
+        if ("null".equals(search)) {
+            search = null;
+        }
+        final String searchString = search == null ? "%%" : "%" + search.toUpperCase() + "%";
+        Order.Status[] statusList = new Order.Status[]{Order.Status.CREATED, Order.Status.ACCEPTED, Order.Status.FINISHED};
+        HashMap<String, Long> result = new HashMap<>(3);
+        for (Order.Status status : statusList) {
+            Specification<OrderQuery> specification = getSpecification(locationEnum, status, searchString);
+            result.put(status.getDescription(), orderQueryRepository.count(specification));
+        }
+        return WrapperResponse.wrap(result);
+    }
+
+    private Specification<OrderQuery> getSpecification(Location location, Order.Status status, String searchString) {
+        return (root, criteriaQuery, criteriaBuilder) -> {
             Path<String> locationPath = root.get("location");
             Path<String> statusPath = root.get("status");
-            Predicate locationPredict = criteriaBuilder.equal(locationPath, location);
+            Predicate locationPredict = criteriaBuilder.equal(locationPath, location.getValue());
             Predicate statusPredict = criteriaBuilder.equal(statusPath, status.getIndex());
 
             Predicate predicate = Stream.of("customer", "osVersion", "deviceModel", "email", "phone", "problemDescription")
@@ -80,9 +113,11 @@ public class AdminOrderService {
             Predicate handlerPredict = criteriaBuilder.like(criteriaBuilder.upper(handlerPath), searchString);
             Predicate searchPredict = criteriaBuilder.or(predicate, handlerPredict);
 
-            return criteriaBuilder.and(locationPredict, statusPredict, searchPredict);
+            if (location == Location.ALL) {
+                return criteriaBuilder.and(statusPredict, searchPredict);
+            }else {
+                return criteriaBuilder.and(locationPredict, statusPredict, searchPredict);
+            }
         };
-        var result = orderQueryRepository.findAll(specification, pageable);
-        return WrapperResponse.wrap(result);
     }
 }

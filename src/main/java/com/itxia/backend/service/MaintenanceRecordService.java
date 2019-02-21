@@ -80,11 +80,11 @@ public class MaintenanceRecordService {
      * @param week 周数
      * @return 是否成功
      */
-    public WrapperResponse generateMaintenanceRecord(int week) {
-        Timestamp startTime = TimeUtil.someWeekStartTime(week);
-        Timestamp endTime = TimeUtil.someWeekEndTime(week);
+    public WrapperResponse generateMaintenanceRecord(int year, int week) {
+        Timestamp startTime = TimeUtil.someWeekStartTime(year, week);
+        Timestamp endTime = TimeUtil.someWeekEndTime(year, week);
         List<Order> orders = orderRepository.findByLastEditTimeBetween(startTime, endTime);
-        String key = "maintenance_log/year" + TimeUtil.currentYearNum() + "_week" + week + ".txt";
+        String key = "maintenance_log/year" + year + "_week" + week + ".txt";
         StringBuilder builder = new StringBuilder();
         orders.stream().map(this::formatOrder).forEach(builder::append);
         this.upload(key, builder.toString());

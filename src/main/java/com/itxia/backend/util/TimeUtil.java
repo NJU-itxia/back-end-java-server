@@ -58,9 +58,9 @@ public class TimeUtil {
      * @param weekNum 周数
      * @return 时间
      */
-    public static Timestamp someWeekStartTime(int weekNum) {
+    public static Timestamp someWeekStartTime(int year, int weekNum) {
         DateTime dateTime = new DateTime();
-        dateTime = dateTime.dayOfWeek().withMinimumValue().withWeekOfWeekyear(weekNum).millisOfDay().withMinimumValue();
+        dateTime = dateTime.withYear(year).dayOfWeek().withMinimumValue().withWeekOfWeekyear(weekNum).millisOfDay().withMinimumValue();
         return new Timestamp(dateTime.getMillis());
     }
 
@@ -70,9 +70,9 @@ public class TimeUtil {
      * @param weekNum 周数
      * @return 时间
      */
-    public static Timestamp someWeekEndTime(int weekNum) {
+    public static Timestamp someWeekEndTime(int year, int weekNum) {
         DateTime dateTime = new DateTime();
-        dateTime = dateTime.dayOfWeek().withMaximumValue().withWeekOfWeekyear(weekNum).millisOfDay().withMaximumValue();
+        dateTime = dateTime.withYear(year).dayOfWeek().withMaximumValue().withWeekOfWeekyear(weekNum).millisOfDay().withMaximumValue();
         return new Timestamp(dateTime.getMillis());
     }
 }

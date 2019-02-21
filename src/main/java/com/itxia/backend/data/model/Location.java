@@ -21,6 +21,11 @@ public enum Location {
     GU_LOU("鼓楼"),
 
     /**
+     * 全校范围
+     */
+    ALL("全校"),
+
+    /**
      * 代表其他情况
      */
     UNDEFINED("未知");
@@ -34,10 +39,13 @@ public enum Location {
     public static Location fromValue(String value) {
         final String xianLinValue = "仙林";
         final String guLouValue = "鼓楼";
+        final String allValue = "全校";
         if (xianLinValue.equals(value)) {
             return Location.XIAN_LIN;
         } else if (guLouValue.equals(value)) {
             return Location.GU_LOU;
+        } else if(allValue.equals(value)) {
+            return Location.ALL;
         } else {
             return Location.UNDEFINED;
         }
