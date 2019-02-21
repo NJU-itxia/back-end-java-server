@@ -67,7 +67,6 @@ public class AdminOrderService {
     public WrapperResponse searchOrderWithHandlerFirst(Location location, Order.Status status, String search, Integer pageNum,
                                                        Integer pageSize, String handler) {
         final String searchString = search == null ? "%%" : "%" + search.toUpperCase() + "%";
-        Pageable pageable = PageRequest.of(pageNum, pageSize, Sort.Direction.DESC, "dateTime");
         Specification<OrderQuery> specification = getSpecification(location, status, searchString);
         var result = orderQueryRepository.findAll(specification);
         result.sort((o1, o2) -> {
@@ -79,7 +78,9 @@ public class AdminOrderService {
                 return o2.getTime().compareTo(o1.getTime());
             }
         });
-        Page<OrderQuery> page = new PageImpl<>(result, PageRequest.of(pageNum, pageSize), result.size());
+        int size = result.size();
+        result = result.subList(pageNum * pageSize, (pageNum + 1) * pageSize);
+        Page<OrderQuery> page = new PageImpl<>(result, PageRequest.of(pageNum, pageSize), size);
         return WrapperResponse.wrap(page);
     }
 
