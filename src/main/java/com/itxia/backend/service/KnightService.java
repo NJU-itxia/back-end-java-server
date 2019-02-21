@@ -185,4 +185,29 @@ public class KnightService {
         orderRepository.save(order);
         return WrapperResponse.wrapSuccess();
     }
+
+    public WrapperResponse putBackAppointment(String knightId, Integer appointmentId) {
+        if (StringUtils.isEmpty(knightId)) {
+            logger.info("IT侠成员id为空");
+            return WrapperResponse.wrapFail();
+        }
+        var order = orderRepository.findById(appointmentId).orElse(null);
+        if (order == null) {
+            logger.info("预约单为空");
+            return WrapperResponse.wrapFail();
+        }
+        var member = itxiaMemberRepository.findOneByLoginName(knightId);
+        if (member == null) {
+            logger.info("IT侠成员不存在");
+            return WrapperResponse.wrapFail();
+        }
+        if (order.getStatus() != Order.Status.ACCEPTED) {
+            logger.info("订单状态不为已接受状态");
+            return WrapperResponse.wrapFail();
+        }
+        order.setStatus(Order.Status.CREATED.getIndex());
+        order.setHandler(null);
+        orderRepository.save(order);
+        return WrapperResponse.wrapSuccess();
+    }
 }

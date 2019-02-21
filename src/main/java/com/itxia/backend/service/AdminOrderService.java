@@ -4,14 +4,13 @@ import com.itxia.backend.controller.vo.WrapperResponse;
 import com.itxia.backend.data.model.Location;
 import com.itxia.backend.data.model.Order;
 import com.itxia.backend.data.model.OrderQuery;
+import com.itxia.backend.data.repo.ItxiaMemberRepository;
 import com.itxia.backend.data.repo.OrderQueryRepository;
 import lombok.var;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.*;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -31,22 +30,18 @@ public class AdminOrderService {
 
     private final OrderQueryRepository orderQueryRepository;
 
+    private final ItxiaMemberRepository itxiaMemberRepository;
+
     private final Logger logger = LoggerFactory.getLogger(AdminService.class);
 
     @Autowired
-    public AdminOrderService(OrderQueryRepository orderQueryRepository) {
+    public AdminOrderService(OrderQueryRepository orderQueryRepository, ItxiaMemberRepository itxiaMemberRepository) {
         this.orderQueryRepository = orderQueryRepository;
+        this.itxiaMemberRepository = itxiaMemberRepository;
     }
 
-    /**
-     * @param location 校区
-     * @param state    维修单状态
-     * @param search   查询字符串
-     * @param pageNum  页码
-     * @param pageSize 页的大小
-     * @return 查询结果
-     */
-    public WrapperResponse searchOrder(String location, String state, String search, Integer pageNum, Integer pageSize) {
+    public WrapperResponse searchOrder(String location, String state, String search, Integer pageNum, Integer pageSize,
+                                       String handler) {
         Location locationEnum = Location.fromValue(location);
         if (locationEnum == Location.UNDEFINED) {
             logger.info("校区错误: " + location);
@@ -62,9 +57,45 @@ public class AdminOrderService {
         if ("null".equals(search)) {
             search = null;
         }
+        if(status == Order.Status.ACCEPTED) {
+            return searchOrderWithHandlerFirst(locationEnum, status, search, pageNum, pageSize, handler);
+        }else {
+            return searchOrderNormal(locationEnum, status, search, pageNum, pageSize);
+        }
+    }
+
+    public WrapperResponse searchOrderWithHandlerFirst(Location location, Order.Status status, String search, Integer pageNum,
+                                                       Integer pageSize, String handler) {
         final String searchString = search == null ? "%%" : "%" + search.toUpperCase() + "%";
         Pageable pageable = PageRequest.of(pageNum, pageSize, Sort.Direction.DESC, "dateTime");
-        Specification<OrderQuery> specification = getSpecification(locationEnum, status, searchString);
+        Specification<OrderQuery> specification = getSpecification(location, status, searchString);
+        var result = orderQueryRepository.findAll(specification);
+        result.sort((o1, o2) -> {
+            if(o1.isHandler(handler)) {
+                return -1;
+            }else if(o2.isHandler(handler)) {
+                return 1;
+            }else {
+                return o2.getTime().compareTo(o1.getTime());
+            }
+        });
+        Page<OrderQuery> page = new PageImpl<>(result, PageRequest.of(pageNum, pageSize), result.size());
+        return WrapperResponse.wrap(page);
+    }
+
+    /**
+     * 按照校区，维修单状态，搜索的字符串，页码和页数来查询维修单
+     * @param location 校区
+     * @param status    维修单状态
+     * @param search   查询字符串
+     * @param pageNum  页码
+     * @param pageSize 页的大小
+     * @return 查询结果
+     */
+    public WrapperResponse searchOrderNormal(Location location, Order.Status status, String search, Integer pageNum, Integer pageSize) {
+        final String searchString = search == null ? "%%" : "%" + search.toUpperCase() + "%";
+        Pageable pageable = PageRequest.of(pageNum, pageSize, Sort.Direction.DESC, "dateTime");
+        Specification<OrderQuery> specification = getSpecification(location, status, searchString);
         var result = orderQueryRepository.findAll(specification, pageable);
         return WrapperResponse.wrap(result);
     }

@@ -89,8 +89,10 @@ public class AdminController {
             @ApiParam(value = PARAM_APM_BY_COND_STATE) @PathVariable("state") String state,
             @ApiParam(value = PARAM_APM_BY_COND_SEARCH) @PathVariable("search") String search,
             @ApiParam(value = PARAM_APM_BY_COND_PAGE) @PathVariable("page") Integer pageNum,
-            @ApiParam(value = PARAM_APM_BY_COND_SIZE) @PathVariable("size") Integer pageSize) {
-        return adminOrderService.searchOrder(location, state, search, pageNum, pageSize);
+            @ApiParam(value = PARAM_APM_BY_COND_SIZE) @PathVariable("size") Integer pageSize,
+            HttpServletRequest request) {
+        String knightId = Optional.of(request).map(r -> r.getHeader("id")).orElse(null);
+        return adminOrderService.searchOrder(location, state, search, pageNum, pageSize, knightId);
     }
 
     @ApiOperation(value = METHOD_ACT_APM, notes = NOTES_ACT_APM)
@@ -99,6 +101,14 @@ public class AdminController {
                                              HttpServletRequest request) {
         String knightId = Optional.of(request).map(r -> r.getHeader("id")).orElse(null);
         return knightService.acceptAppointment(knightId, appointmentId);
+    }
+
+    @ApiOperation(value = "", notes = "")
+    @PostMapping("/appointment/cancel/{id}")
+    public WrapperResponse putBackAppointment(@ApiParam(value = "") @PathVariable("id") Integer appointmentId,
+                                             HttpServletRequest request) {
+        String knightId = Optional.of(request).map(r -> r.getHeader("id")).orElse(null);
+        return knightService.putBackAppointment(knightId, appointmentId);
     }
 
     @PostMapping("/appointment/finish/{id}")

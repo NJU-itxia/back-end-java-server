@@ -16,6 +16,6 @@ public class AdminOrderServiceTest {
 
     @Test
     public void searchOrder() {
-        WrapperResponse wrapperResponse = adminOrderService.searchOrder("仙林", "FINISHED", "Win", 0, 10);
+        WrapperResponse wrapperResponse = adminOrderService.searchOrder("仙林", "FINISHED", "Win", 0, 10, "test");
     }
 }

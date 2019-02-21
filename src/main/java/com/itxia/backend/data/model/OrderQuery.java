@@ -72,6 +72,13 @@ public class OrderQuery {
         return dateTime.toString("yyyy-MM-dd HH:mm:ss");
     }
 
+    public boolean isHandler(String id) {
+        if(itxia == null) {
+            return false;
+        }
+        return itxia.getLoginName().equals(id);
+    }
+
     public String getHandler() {
         if (itxia == null) {
             return null;
