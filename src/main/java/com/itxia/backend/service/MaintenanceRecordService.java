@@ -93,7 +93,7 @@ public class MaintenanceRecordService {
         Timestamp startTime = new Timestamp(new DateTime().minusMinutes(1).getMillis());
         Timestamp endTime = new Timestamp(System.currentTimeMillis());
         var orders = orderRepository.findByLastEditTimeBetween(startTime, endTime);
-        if(orders.size() <= 0) {
+        if (orders.size() <= 0) {
             return;
         }
         Example<ItxiaMember> example = Example.of(ItxiaMember.builder().acceptEmail(true).build());
@@ -102,17 +102,19 @@ public class MaintenanceRecordService {
         stringBuilder.append("亲爱的IT侠，预约系统有 ");
         stringBuilder.append(orders.size());
         stringBuilder.append(" 份新的预约：<br /><br />");
+        StringBuilder titleBuilder = new StringBuilder("IT侠新预约提醒: ");
+        titleBuilder.append(orders.get(0).getProblemDescription().substring(0, Math.max(20, orders.get(0).getProblemDescription().length())));
         for (int i = 0; i < orders.size(); i++) {
-            stringBuilder.append("  ");
-            stringBuilder.append(i);
-            stringBuilder.append(". [");
+            stringBuilder.append("  <strong>");
+            stringBuilder.append(i + 1);
+            stringBuilder.append("</strong>. [");
             stringBuilder.append(orders.get(i).getLocationRawValue());
             stringBuilder.append("] ");
             stringBuilder.append(orders.get(i).getProblemDescription());
             stringBuilder.append("<br /><br />");
         }
         stringBuilder.append("有时间请到预约系统查看~");
-        mailService.sendMail("IT侠新预约提醒",
+        mailService.sendMail(titleBuilder.toString(),
                 stringBuilder.toString(),
                 listenList.stream().map(ItxiaMember::getEmail).collect(Collectors.toList()));
     }

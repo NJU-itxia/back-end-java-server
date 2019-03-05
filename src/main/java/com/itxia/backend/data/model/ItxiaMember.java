@@ -55,7 +55,7 @@ public class ItxiaMember {
     /**
      * 接受邮件通知
      */
-    private Boolean acceptEmail = false;
+    private Boolean acceptEmail;
 
     /**
      * 邮箱账号
