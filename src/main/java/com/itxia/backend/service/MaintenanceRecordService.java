@@ -102,7 +102,7 @@ public class MaintenanceRecordService {
         stringBuilder.append("亲爱的IT侠，预约系统有 ");
         stringBuilder.append(orders.size());
         stringBuilder.append(" 份新的预约：<br /><br />");
-        StringBuilder titleBuilder = new StringBuilder("IT侠新预约提醒: ");
+        StringBuilder titleBuilder = new StringBuilder("新预约: ");
         titleBuilder.append(orders.get(0).getProblemDescription().substring(0, Math.max(20, orders.get(0).getProblemDescription().length())));
         for (int i = 0; i < orders.size(); i++) {
             stringBuilder.append("  <strong>");
