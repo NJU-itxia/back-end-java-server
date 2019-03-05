@@ -2,12 +2,16 @@ package com.itxia.backend.service;
 
 import com.aliyun.oss.OSSClient;
 import com.itxia.backend.controller.vo.WrapperResponse;
+import com.itxia.backend.data.model.ItxiaMember;
 import com.itxia.backend.data.model.Order;
+import com.itxia.backend.data.repo.ItxiaMemberRepository;
 import com.itxia.backend.data.repo.OrderRepository;
 import com.itxia.backend.util.TimeUtil;
+import lombok.var;
 import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Example;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
@@ -15,6 +19,7 @@ import org.springframework.stereotype.Service;
 import java.io.ByteArrayInputStream;
 import java.sql.Timestamp;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * @author Yzh
@@ -46,9 +51,15 @@ public class MaintenanceRecordService {
 
     private final OrderRepository orderRepository;
 
+    private final ItxiaMemberRepository itxiaMemberRepository;
+
+    private final MailService mailService;
+
     @Autowired
-    public MaintenanceRecordService(OrderRepository orderRepository) {
+    public MaintenanceRecordService(OrderRepository orderRepository, ItxiaMemberRepository itxiaMemberRepository, MailService mailService) {
         this.orderRepository = orderRepository;
+        this.itxiaMemberRepository = itxiaMemberRepository;
+        this.mailService = mailService;
     }
 
     /**
@@ -72,6 +83,38 @@ public class MaintenanceRecordService {
         StringBuilder builder = new StringBuilder();
         orders.stream().map(this::formatOrder).forEach(builder::append);
         this.upload(key, builder.toString());
+    }
+
+    /**
+     * 每分钟一次
+     */
+    @Scheduled(cron = "0 */1 * * * *")
+    private void checkNewAppointment() {
+        Timestamp startTime = new Timestamp(new DateTime().minusMinutes(1).getMillis());
+        Timestamp endTime = new Timestamp(System.currentTimeMillis());
+        var orders = orderRepository.findByLastEditTimeBetween(startTime, endTime);
+        if(orders.size() <= 0) {
+            return;
+        }
+        Example<ItxiaMember> example = Example.of(ItxiaMember.builder().acceptEmail(true).build());
+        var listenList = itxiaMemberRepository.findAll(example);
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append("亲爱的IT侠，预约系统有 ");
+        stringBuilder.append(orders.size());
+        stringBuilder.append(" 份新的预约：<br /><br />");
+        for (int i = 0; i < orders.size(); i++) {
+            stringBuilder.append("  ");
+            stringBuilder.append(i);
+            stringBuilder.append(". [");
+            stringBuilder.append(orders.get(i).getLocationRawValue());
+            stringBuilder.append("] ");
+            stringBuilder.append(orders.get(i).getProblemDescription());
+            stringBuilder.append("<br /><br />");
+        }
+        stringBuilder.append("有时间请到预约系统查看~");
+        mailService.sendMail("IT侠新预约提醒",
+                stringBuilder.toString(),
+                listenList.stream().map(ItxiaMember::getEmail).collect(Collectors.toList()));
     }
 
     /**

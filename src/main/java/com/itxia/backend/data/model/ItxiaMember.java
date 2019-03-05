@@ -53,6 +53,11 @@ public class ItxiaMember {
     private Boolean admin;
 
     /**
+     * 接受邮件通知
+     */
+    private Boolean acceptEmail = false;
+
+    /**
      * 邮箱账号
      */
     private String email;
