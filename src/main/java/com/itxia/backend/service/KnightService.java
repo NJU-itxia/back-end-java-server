@@ -6,6 +6,7 @@ import com.itxia.backend.data.model.Reply;
 import com.itxia.backend.data.repo.ItxiaMemberRepository;
 import com.itxia.backend.data.repo.OrderRepository;
 import com.itxia.backend.data.repo.ReplyRepository;
+import com.itxia.backend.util.PasswordUtil;
 import lombok.var;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
@@ -67,7 +68,7 @@ public class KnightService {
             return WrapperResponse.wrapFail();
         }
         var member = itxiaMemberRepository.findOneByLoginName(knightId);
-        if (oldPassword.equals(member.getPassword())) {
+        if (oldPassword.equals(member.getPassword()) && PasswordUtil.isValidPassword(newPassword)) {
             member.setPassword(newPassword);
             itxiaMemberRepository.save(member);
             return WrapperResponse.wrapSuccess();

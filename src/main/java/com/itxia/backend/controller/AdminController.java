@@ -131,9 +131,9 @@ public class AdminController {
     @PutMapping("/member/create")
     public WrapperResponse createMember(@ApiParam(value = PARAM_CREATE_MBR_USER) String username,
                                         @ApiParam(value = PARAM_CREATE_MBR_PWD) String password,
-                                        @ApiParam(value = PARAM_CREATE_MBR_LOC) Location location,
+                                        @ApiParam(value = PARAM_CREATE_MBR_LOC) String location,
                                         @ApiParam(value = PARAM_CREATE_MBR_NAME) String name) {
-        return adminService.createMember(username, password, location, name);
+        return adminService.createMember(username, password, Location.fromValue(location), name);
     }
 
     @ApiOperation(value = METHOD_MBR_ALL, notes = NOTES_MBR_ALL)
