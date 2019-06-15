@@ -11,17 +11,14 @@ pool:
   vmImage: 'ubuntu-latest'
 
 steps:
-- bash: |
-    echo user: $(whoami)
-    sudo apt-get purge mysql-server
-    MYSQL_ROOT_PASSWORD=root
-    echo "mysql-server mysql-server/root_password password $MYSQL_ROOT_PASSWORD" | debconf-set-selections
-    echo "mysql-server mysql-server/root_password_again password $MYSQL_ROOT_PASSWORD" | debconf-set-selections
-    sudo apt-get install mysql-server -y
-    sudo mysql -u root -p root -e "create database test_app_itxia;"
-    sudo mysql -u root -p root -e "set password for root@localhost = password("root");"
-#  condition: eq( variables['Agent.OS'], 'Linux' )
-  displayName: create mysql
+- task: MysqlDeploymentOnMachineGroup@1
+  inputs:
+#    TaskNameSelector: 'SqlTaskFile'
+    ServerName: 'localhost'
+    SqlFile: 'create database test_app_itxia;'
+    DatabaseName: 'test_app_itxia'
+    SqlUsername: 'root'
+    SqlPassword: 'root'
 #wtf
 - task: Maven@3
   inputs:
