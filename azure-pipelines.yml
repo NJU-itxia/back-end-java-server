@@ -13,7 +13,7 @@ pool:
 steps:
 - bash: |
     echo $(whoami)
-    sudo apt-get install mysql -y
+    sudo apt-get install mysql-server -y
     sudo mysql -u root -e "create database test_app_itxia;"
     sudo mysql -u root -e "set password for root@localhost = password("root");"
 #  condition: eq( variables['Agent.OS'], 'Linux' )
