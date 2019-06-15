@@ -13,9 +13,7 @@ pool:
 steps:
 - task: MysqlDeploymentOnMachineGroup@1
   inputs:
-#    TaskNameSelector: 'SqlTaskFile'
     ServerName: 'localhost'
-    SqlFile: 'create database test_app_itxia;'
     DatabaseName: 'test_app_itxia'
     SqlUsername: 'root'
     SqlPassword: 'root'
