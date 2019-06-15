@@ -12,7 +12,12 @@ pool:
 
 steps:
 - bash: |
-    echo $(whoami)
+    echo user: $(whoami)
+    sudo apt-get install mysql-client -y
+    sudo apt-get purge mysql-server
+    MYSQL_ROOT_PASSWORD=root
+    echo "mysql-server mysql-server/root_password password $MYSQL_ROOT_PASSWORD" | debconf-set-selections
+    echo "mysql-server mysql-server/root_password_again password $MYSQL_ROOT_PASSWORD" | debconf-set-selections
     sudo apt-get install mysql-server -y
     sudo mysql -u root -e "create database test_app_itxia;"
     sudo mysql -u root -e "set password for root@localhost = password("root");"
