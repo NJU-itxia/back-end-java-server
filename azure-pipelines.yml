@@ -19,8 +19,8 @@ steps:
     echo "mysql-server mysql-server/root_password password $MYSQL_ROOT_PASSWORD" | debconf-set-selections
     echo "mysql-server mysql-server/root_password_again password $MYSQL_ROOT_PASSWORD" | debconf-set-selections
     sudo apt-get install mysql-server -y
-    sudo mysql -u root -e "create database test_app_itxia;"
-    sudo mysql -u root -e "set password for root@localhost = password("root");"
+    sudo mysql -u root -p root -e "create database test_app_itxia;"
+    sudo mysql -u root -p root -e "set password for root@localhost = password("root");"
 #  condition: eq( variables['Agent.OS'], 'Linux' )
   displayName: create mysql
 #wtf
