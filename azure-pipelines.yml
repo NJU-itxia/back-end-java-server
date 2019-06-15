@@ -6,21 +6,30 @@
 trigger:
 - master
 - dev
+resources:
+  containers:
+  - container: mysql
+    image: mysql
+    environment:
+    - MYSQL_DATABASES=test_app_itxia
+    - MYSQL_ROOT_PASSWORD=root
+    - MYSQL_HOST=localhost
+    - MYSQL_PORT=3306
+#    - MYSQL_USER=test
+#    - MYSQL_PASSWORD=test
+#    - MYSQL_MY_DATABASE=my-database
+    ports: "3306:3306"
+    volumes:
+    - "./volumes/mysql:/var/lib/mysql"
 
 pool:
   vmImage: 'ubuntu-latest'
 
-steps:
-- task: MysqlDeploymentOnMachineGroup@1
-  inputs:
-    TaskNameSelector: 'InlineSqlTask'
-    SqlInline: 'CREATE DATABASE IF NOT EXISTS test_app_itxia;
-      use test_app_itxia;'
-    ServerName: 'localhost'
-    DatabaseName: 'test_app_itxia'
-    SqlUsername: 'root'
-    SqlPassword: 'root'
+services:
+  mysql: mysql
+
 #wtf
+steps:
 - task: Maven@3
   inputs:
     mavenPomFile: 'pom.xml'
