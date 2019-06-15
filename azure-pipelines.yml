@@ -7,17 +7,16 @@ trigger:
 - master
 - dev
 
-resources:
-  containers:
-  - container: mysql
-    image: mysql
-services:
-  mysql: mysql
-
 pool:
   vmImage: 'ubuntu-latest'
 
 steps:
+- bash: |
+    apt-get install mysql -y \
+    mysql -u root -e "create database test_app_itxia"
+#  condition: eq( variables['Agent.OS'], 'Linux' )
+  displayName: create mysql
+#wtf
 - task: Maven@3
   inputs:
     mavenPomFile: 'pom.xml'
