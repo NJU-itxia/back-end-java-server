@@ -27,7 +27,7 @@ services:
 steps:
 #check db connection
 - bash: |
-    mysql -uroot -proot test_app_itxia -e exit
+    mysql -uroot -proot -e "create database test_app_itxia;"
   displayName: Check db connection
 
 - task: Maven@3
