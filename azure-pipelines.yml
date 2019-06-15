@@ -12,8 +12,9 @@ pool:
 
 steps:
 - bash: |
-    apt-get install mysql -y \
-    mysql -u root -e "create database test_app_itxia"
+    apt-get install mysql -y
+    mysql -u root -e "create database test_app_itxia;"
+    mysql -u root -e "set password for root@localhost = password("root");"
 #  condition: eq( variables['Agent.OS'], 'Linux' )
   displayName: create mysql
 #wtf
