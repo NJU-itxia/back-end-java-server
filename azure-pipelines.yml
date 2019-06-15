@@ -12,14 +12,12 @@ pool:
 
 steps:
 - task: MysqlDeploymentOnMachineGroup@1
-  displayName: "setting up mysql"
   inputs:
+    TaskNameSelector: 'InlineSqlTask'
+    SqlInline: 'CREATE DATABASE IF NOT EXISTS test_app_itxia;
+      use test_app_itxia;'
     ServerName: 'localhost'
-#    DatabaseName: 'test_app_itxia'
-    TaskNameSelector: InlineSqlTask
-    SqlInline: |
-     CREATE DATABASE IF NOT EXISTS test_app_itxia;
-     use test_app_itxia;
+    DatabaseName: 'test_app_itxia'
     SqlUsername: 'root'
     SqlPassword: 'root'
 #wtf
