@@ -27,8 +27,7 @@ services:
 steps:
 #check db connection
 - bash: |
-    echo $(netstat -l)
-    mysql -u root -p root -e 'use test_app_itxia'
+    mysql -uroot -proot test_app_itxia -e exit
   displayName: Check db connection
 
 - task: Maven@3
