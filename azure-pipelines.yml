@@ -9,7 +9,18 @@ trigger:
 pool:
   vmImage: 'ubuntu-latest'
 
+
 steps:
+#配置本地数据库(用于测试)
+- task: MysqlDeploymentOnMachineGroup@1
+  inputs:
+    TaskNameSelector: 'SqlTaskFile'
+#    SqlFile: 'wtf is this'
+    ServerName: 'localhost'
+    DatabaseName: 'test_app_itxia'
+    SqlUsername: 'root'
+    SqlPassword: 'root'
+#build
 - task: Maven@3
   inputs:
     mavenPomFile: 'pom.xml'
