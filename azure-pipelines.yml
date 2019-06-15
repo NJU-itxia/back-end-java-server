@@ -11,7 +11,7 @@ resources:
   - container: mysql
     image: mysql
     environment:
-    - MYSQL_DATABASE=test_app_itxia
+    - MYSQL_DATABASES=test_app_itxia
     - MYSQL_ROOT_PASSWORD=root
 #    - MYSQL_USER=test
 #    - MYSQL_PASSWORD=test
