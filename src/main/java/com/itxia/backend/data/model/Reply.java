@@ -15,7 +15,7 @@ import java.sql.Timestamp;
  * 预约单的评论/回复
  */
 @Entity
-@Table
+@Table(name="reply")
 @Data
 @Builder
 public class Reply {
@@ -24,7 +24,7 @@ public class Reply {
      * 回复的id
      */
     @Id
-    @Column(name = "index")
+    @Column(name = "`index`")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
