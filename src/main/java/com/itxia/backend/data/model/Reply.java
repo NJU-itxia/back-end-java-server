@@ -15,6 +15,7 @@ import java.sql.Timestamp;
  * 预约单的评论/回复
  */
 @Entity
+@Table
 @Data
 @Builder
 public class Reply {
