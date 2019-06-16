@@ -9,7 +9,7 @@ trigger:
 resources:
   containers:
   - container: mysql
-    image: mysql:8.0.16
+    image: mysql:5.5.56
     environment:
     - MYSQL_DATABASES=test_app_itxia
     - MYSQL_ROOT_PASSWORD=root
