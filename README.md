@@ -1,7 +1,6 @@
 # IT侠预约系统后端服务
 
-[![Build Status](https://www.travis-ci.org/NJU-itxia/back-end-java-server.svg?branch=master)](https://www.travis-ci.org/NJU-itxia/back-end-java-server)
-
+[![master-Build Status](https://piscesxp.visualstudio.com/nju-itxia-backend/_apis/build/status/NJU-itxia.back-end-java-server?branchName=master)](https://piscesxp.visualstudio.com/nju-itxia-backend/_build/latest?definitionId=1&branchName=master)
 > 与back-end-controller中的node层一起使用， 使用node做权限验证和反向代理，java服务器只在服务器本地启动，不考虑权限问题
 
 ## 调试
