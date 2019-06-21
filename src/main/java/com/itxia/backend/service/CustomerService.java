@@ -21,6 +21,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.Timestamp;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
@@ -294,5 +296,11 @@ public class CustomerService {
                 Pageable.unpaged()
         );
         return WrapperResponse.wrap(allAppointments.getTotalElements());
+    }
+
+    public WrapperResponse getUserInfo(String customerId) {
+        Map<String, String> map = new HashMap<>();
+        map.put("phone", customerId);
+        return WrapperResponse.wrap(map);
     }
 }

@@ -18,7 +18,7 @@ import java.sql.Timestamp;
 
 /**
  * @author Yzh
- * 非管理员it侠用户相关操作的服务
+ * 非管理员IT侠用户相关操作的服务
  */
 @Service
 @Transactional(rollbackFor = Throwable.class)

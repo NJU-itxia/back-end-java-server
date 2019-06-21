@@ -110,4 +110,9 @@ public class CustomerController {
         return WrapperResponse.wrapSuccess();
     }
 
+    @PostMapping("/info")
+    public WrapperResponse userInfo(HttpServletRequest request) {
+        String customerId = Optional.of(request).map(r -> r.getHeader("id")).orElse(null);
+        return customerService.getUserInfo(customerId);
+    }
 }

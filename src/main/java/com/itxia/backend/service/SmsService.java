@@ -22,6 +22,7 @@ import java.time.LocalDateTime;
 
 /**
  * @author Yzh
+ * 发短信用，但是暂时没有在用
  */
 @Service
 @Transactional(rollbackFor = Throwable.class)
@@ -102,6 +103,13 @@ public class SmsService {
         }
     }
 
+    /**
+     * 发验证码邮件
+     *
+     * @param phone 手机号
+     * @param code  验证码
+     * @return 发送结果
+     */
     private boolean sendSms(String phone, String code) {
         System.setProperty("sun.net.client.defaultConnectTimeout", "10000");
         System.setProperty("sun.net.client.defaultReadTimeout", "10000");
