@@ -70,9 +70,9 @@ public class AdminOrderService {
         Specification<OrderQuery> specification = getSpecification(location, status, searchString);
         var result = orderQueryRepository.findAll(specification);
         result.sort((o1, o2) -> {
-            if (o1.isHandler(handler)) {
-                return -1;
-            } else if (o2.isHandler(handler)) {
+            if (o1.isHandler(handler) && !o2.isHandler(handler)) {
+                return 1;
+            } else if (o2.isHandler(handler) && !o1.isHandler(handler)) {
                 return 1;
             } else {
                 return o2.getTime().compareTo(o1.getTime());
