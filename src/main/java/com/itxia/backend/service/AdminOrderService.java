@@ -71,7 +71,7 @@ public class AdminOrderService {
         var result = orderQueryRepository.findAll(specification);
         result.sort((o1, o2) -> {
             if (o1.isHandler(handler) && !o2.isHandler(handler)) {
-                return -1;
+                return 1;
             } else if (o2.isHandler(handler) && !o1.isHandler(handler)) {
                 return -1;
             } else {
