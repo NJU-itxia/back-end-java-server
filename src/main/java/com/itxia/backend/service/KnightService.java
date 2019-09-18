@@ -60,6 +60,9 @@ public class KnightService {
      */
     public WrapperResponse updateSelfInfo(String id,String location,boolean acceptEmail,String email) {
         var info = itxiaMemberRepository.findOneByLoginName(id);
+        if(info==null){
+            return WrapperResponse.wrapFail("该用户不存在");
+        }
         if(location!=null && ! location.isEmpty()){
             //这波操作没有酒
             if(Location.fromValue(location)!=Location.UNDEFINED){

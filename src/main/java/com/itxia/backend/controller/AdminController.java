@@ -56,6 +56,7 @@ public class AdminController {
                                       @ApiParam(value = PARAM_SELF_INFO_ACCEPT_EMAIL) Boolean acceptEmail,
                                           HttpServletRequest request) {
         String knightId = Optional.of(request).map(r -> r.getHeader("id")).orElse(null);
+
         return knightService.updateSelfInfo(knightId,location,acceptEmail,email);
     }
 
