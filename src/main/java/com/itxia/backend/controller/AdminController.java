@@ -49,12 +49,21 @@ public class AdminController {
         return knightService.getSelfInfo(knightId);
     }
 
+    @ApiOperation(value = UPDATE_SELF_INFO)
+    @PostMapping("/updateInfo")
+    public WrapperResponse updateInfo(@ApiParam(value = PARAM_SELF_INFO_LOCATION) String location,
+                                      @ApiParam(value = PARAM_SELF_INFO_EMAIL) String email,
+                                      @ApiParam(value = PARAM_SELF_INFO_ACCEPT_EMAIL) Boolean acceptEmail,
+                                          HttpServletRequest request) {
+        String knightId = Optional.of(request).map(r -> r.getHeader("id")).orElse(null);
+        return knightService.updateSelfInfo(knightId,location,acceptEmail,email);
+    }
+
     @ApiOperation(value = METHOD_MOD_PWD, notes = NOTES_MOD_PWD)
     @PostMapping("/password/modify")
     public WrapperResponse modifyPassword(@ApiParam(value = PARAM_MOD_PWD_OLD_PWD) String oldPassword,
                                           @ApiParam(value = PARAM_MOD_PWD_NEW_PWD) String newPassword,
                                           HttpServletRequest request) {
-
         String knightId = Optional.of(request).map(r -> r.getHeader("id")).orElse(null);
         return knightService.modifyPassword(knightId, oldPassword, newPassword);
     }

@@ -11,6 +11,11 @@ public class AdminControllerApiDescription {
     public static final String PARAM_MOD_PWD_OLD_PWD = "当前的密码";
     public static final String PARAM_MOD_PWD_NEW_PWD = "新密码";
 
+    public static final String UPDATE_SELF_INFO = "修改自己的个人信息";
+    public static final String PARAM_SELF_INFO_LOCATION = "个人信息-校区";
+    public static final String PARAM_SELF_INFO_ACCEPT_EMAIL = "个人信息-是否接受邮箱";
+    public static final String PARAM_SELF_INFO_EMAIL = "个人信息-邮箱";
+
     public static final String METHOD_APM_ALL = "后台用户查看所有的维修单";
     public static final String NOTES_APM_ALL = "这个接口会查询很久，谨慎使用";
 

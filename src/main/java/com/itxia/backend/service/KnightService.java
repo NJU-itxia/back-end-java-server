@@ -1,6 +1,7 @@
 package com.itxia.backend.service;
 
 import com.itxia.backend.controller.vo.WrapperResponse;
+import com.itxia.backend.data.model.Location;
 import com.itxia.backend.data.model.Order;
 import com.itxia.backend.data.model.Reply;
 import com.itxia.backend.data.repo.ItxiaMemberRepository;
@@ -46,6 +47,33 @@ public class KnightService {
      */
     public WrapperResponse getSelfInfo(String id) {
         return WrapperResponse.wrap(itxiaMemberRepository.findOneByLoginName(id));
+    }
+
+    /**
+     * 更新个人信息
+     *
+     * @param id IT侠账号ID
+     * @param location 校区
+     * @param acceptEmail 是否接受邮件
+     * @param email 邮箱地址
+     * @return 更新结果
+     */
+    public WrapperResponse updateSelfInfo(String id,String location,boolean acceptEmail,String email) {
+        var info = itxiaMemberRepository.findOneByLoginName(id);
+        if(location!=null && ! location.isEmpty()){
+            //这波操作没有酒
+            if(Location.fromValue(location)!=Location.UNDEFINED){
+                info.setLocationRawValue(location);
+            }else{
+                return WrapperResponse.wrapFail("开新校区了？");
+            }
+        }
+        info.setAcceptEmail(acceptEmail);
+        if(email!=null){
+            info.setEmail(email);
+        }
+        itxiaMemberRepository.save(info);
+        return WrapperResponse.wrapSuccess();
     }
 
     /**
