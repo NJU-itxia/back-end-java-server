@@ -1,5 +1,6 @@
 package com.itxia.backend.service;
 
+import com.itxia.backend.controller.vo.SelfInfoParam;
 import com.itxia.backend.controller.vo.WrapperResponse;
 import com.itxia.backend.data.model.Location;
 import com.itxia.backend.data.model.Order;
@@ -58,21 +59,38 @@ public class KnightService {
      * @param email 邮箱地址
      * @return 更新结果
      */
-    public WrapperResponse updateSelfInfo(String id,String location,boolean acceptEmail,String email) {
+    public WrapperResponse updateSelfInfo(SelfInfoParam selfInfoParam) {
         var info = itxiaMemberRepository.findOneByLoginName(id);
         if(info==null){
             return WrapperResponse.wrapFail("该用户不存在");
         }
+        var location = selfInfoParam.getLocation();
         if(location!=null && ! location.isEmpty()){
             //这波操作没有酒
-            if(Location.fromValue(location)!=Location.UNDEFINED){
-                info.setLocationRawValue(location);
-            }else{
-                return WrapperResponse.wrapFail("开新校区了？");
+            switch (location){
+                case "鼓楼":
+                case "GULOU":
+                case "GU_LOU":
+                    location = Location.GU_LOU.getValue();
+                    break;
+                case "仙林":
+                case "XIANLIN":
+                case "XIAN_LIN":
+                    location = Location.XIAN_LIN.getValue();
+                    break;
+                case "ALL":
+                case "全校":
+                    location = Location.ALL.getValue();
+                    break;
+                default:
+                    return WrapperResponse.wrapFail("校区不存在(开新校区了嘛)");
             }
+            info.setLocationRawValue(location);
         }
-        info.setAcceptEmail(acceptEmail);
+        info.setAcceptEmail(selfInfoParam.getAcceptEmail());
+        var email = selfInfoParam.getEmail();
         if(email!=null){
+            //可为 ""
             info.setEmail(email);
         }
         itxiaMemberRepository.save(info);

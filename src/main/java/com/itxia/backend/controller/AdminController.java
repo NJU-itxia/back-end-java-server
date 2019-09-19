@@ -1,5 +1,6 @@
 package com.itxia.backend.controller;
 
+import com.itxia.backend.controller.vo.SelfInfoParam;
 import com.itxia.backend.controller.vo.WrapperResponse;
 import com.itxia.backend.data.model.Location;
 import com.itxia.backend.service.AdminOrderService;
@@ -51,13 +52,10 @@ public class AdminController {
 
     @ApiOperation(value = UPDATE_SELF_INFO)
     @PostMapping("/updateInfo")
-    public WrapperResponse updateInfo(@ApiParam(value = PARAM_SELF_INFO_LOCATION) String location,
-                                      @ApiParam(value = PARAM_SELF_INFO_EMAIL) String email,
-                                      @ApiParam(value = PARAM_SELF_INFO_ACCEPT_EMAIL) Boolean acceptEmail,
-                                          HttpServletRequest request) {
+    public WrapperResponse updateInfo(@RequestBody SelfInfoParam selfInfoParam,
+                                      HttpServletRequest request) {
         String knightId = Optional.of(request).map(r -> r.getHeader("id")).orElse(null);
-
-        return knightService.updateSelfInfo(knightId,location,acceptEmail,email);
+        return knightService.updateSelfInfo(knightId,selfInfoParam);
     }
 
     @ApiOperation(value = METHOD_MOD_PWD, notes = NOTES_MOD_PWD)
