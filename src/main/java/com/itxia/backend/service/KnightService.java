@@ -54,17 +54,15 @@ public class KnightService {
      * 更新个人信息
      *
      * @param id IT侠账号ID
-     * @param location 校区
-     * @param acceptEmail 是否接受邮件
-     * @param email 邮箱地址
+     * @param selfInfoParam 要更新的信息
      * @return 更新结果
      */
-    public WrapperResponse updateSelfInfo(SelfInfoParam selfInfoParam) {
+    public WrapperResponse updateSelfInfo(String id,SelfInfoParam selfInfoParam) {
         var info = itxiaMemberRepository.findOneByLoginName(id);
         if(info==null){
             return WrapperResponse.wrapFail("该用户不存在");
         }
-        var location = selfInfoParam.getLocation();
+        String location = selfInfoParam.getLocation();
         if(location!=null && ! location.isEmpty()){
             //这波操作没有酒
             switch (location){
@@ -88,7 +86,7 @@ public class KnightService {
             info.setLocationRawValue(location);
         }
         info.setAcceptEmail(selfInfoParam.getAcceptEmail());
-        var email = selfInfoParam.getEmail();
+        String email = selfInfoParam.getEmail();
         if(email!=null){
             //可为 ""
             info.setEmail(email);
