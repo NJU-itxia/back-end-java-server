@@ -71,15 +71,15 @@ public class AdminService {
         var testMember = itxiaMemberRepository.findOneByLoginName(username);
         if (StringUtils.isEmpty(name) || location == null) {
             logger.info("校区和登录名不能为空");
-            return WrapperResponse.wrapFail();
+            return WrapperResponse.wrapFail("校区和登录名不能为空");
         }
         if (testMember != null) {
             logger.info("创建的用户已存在");
-            return WrapperResponse.wrapFail();
+            return WrapperResponse.wrapFail("创建的用户已存在");
         }
         if (!PasswordUtil.isValidPassword(password)) {
             logger.info("密码不符合要求");
-            return WrapperResponse.wrapFail();
+            return WrapperResponse.wrapFail("密码不符合要求");
         }
         ItxiaMember member = ItxiaMember.builder()
                 .admin(false)
