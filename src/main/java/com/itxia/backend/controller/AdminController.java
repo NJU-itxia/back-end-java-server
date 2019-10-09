@@ -1,5 +1,6 @@
 package com.itxia.backend.controller;
 
+import com.itxia.backend.controller.vo.AddMemberParam;
 import com.itxia.backend.controller.vo.SelfInfoParam;
 import com.itxia.backend.controller.vo.WrapperResponse;
 import com.itxia.backend.data.model.Location;
@@ -137,11 +138,8 @@ public class AdminController {
 
     @ApiOperation(value = METHOD_CREATE_MBR, notes = NOTES_CREATE_MBR)
     @PutMapping("/member/create")
-    public WrapperResponse createMember(@ApiParam(value = PARAM_CREATE_MBR_USER) String username,
-                                        @ApiParam(value = PARAM_CREATE_MBR_PWD) String password,
-                                        @ApiParam(value = PARAM_CREATE_MBR_LOC) String location,
-                                        @ApiParam(value = PARAM_CREATE_MBR_NAME) String name) {
-        return adminService.createMember(username, password, Location.fromValue(location), name);
+    public WrapperResponse createMember(@RequestBody AddMemberParam addMemberParam) {
+        return adminService.createMember(addMemberParam.getLoginName(), addMemberParam.getPassword(), Location.fromValue(addMemberParam.getLocation()), addMemberParam.getName(),addMemberParam.getEmail(),addMemberParam.getAcceptEmail());
     }
 
     @ApiOperation(value = METHOD_MBR_ALL, notes = NOTES_MBR_ALL)

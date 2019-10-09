@@ -67,7 +67,7 @@ public class AdminService {
      * @param password 密码
      * @return 操作结果，使用WrapperResponse中的静态方法包装
      */
-    public WrapperResponse createMember(String username, String password, Location location, String name) {
+    public WrapperResponse createMember(String username, String password, Location location, String name, String email, Boolean acceptEmail) {
         var testMember = itxiaMemberRepository.findOneByLoginName(username);
         if (StringUtils.isEmpty(name) || location == null) {
             logger.info("校区和登录名不能为空");
@@ -86,7 +86,8 @@ public class AdminService {
                 .loginName(username)
                 .name(name)
                 .password(password)
-                .email(null)
+                .email(email)
+                .acceptEmail(acceptEmail)
                 .locationRawValue(location.getValue())
                 .build();
         itxiaMemberRepository.save(member);
