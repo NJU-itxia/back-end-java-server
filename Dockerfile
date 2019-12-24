@@ -8,4 +8,5 @@ RUN mvn install -Dmaven.test.skip=true
 FROM openjdk:8
 WORKDIR /itxia
 COPY --from=builder /itxia/target/back-end-0.0.1-SNAPSHOT.jar ./app.jar
+EXPOSE 8080
 CMD java -jar app.jar
